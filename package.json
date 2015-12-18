@@ -1,0 +1,26 @@
+{
+  "name": "react-1",
+  "version": "0.0.0",
+  "description": "React to sound!",
+  "main": "main.js",
+  "dependencies": {
+    "browserify": "^12.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onewheelskyward/react-1.git"
+  },
+  "keywords": [
+    "react"
+  ],
+  "author": "Andrew Kreps",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/onewheelskyward/react-1/issues"
+  },
+  "homepage": "https://github.com/onewheelskyward/react-1#readme"
+}

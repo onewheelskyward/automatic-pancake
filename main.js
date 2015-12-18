@@ -1,6 +1,7 @@
 // main.js
 var React = require('react');
 var ReactDOM = require('react-dom');
+var Dropzone = require('react-dropzone');
 
 ReactDOM.render(
 <h1>Hello, world!</h1>,
@@ -8,6 +9,13 @@ ReactDOM.render(
 );
 
 var DropzoneDemo = React.createClass({
+    //onDrop: function(files){
+    //    var req = request.post('/upload');
+    //    files.forEach((file)=> {
+    //        req.attach(file.name, file);
+    //    });
+    //    req.end(callback);
+    //}
     onDrop: function (files) {
         console.log('Received files: ', files);
     },
@@ -23,4 +31,4 @@ var DropzoneDemo = React.createClass({
     }
 });
 
-React.render(<DropzoneDemo />, document.body);
+ReactDOM.render(<DropzoneDemo />, document.getElementById('dropzone'));
