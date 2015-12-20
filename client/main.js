@@ -9,16 +9,22 @@ ReactDOM.render(
 );
 
 var DropzoneDemo = React.createClass({
-    //onDrop: function(files){
-    //    var req = request.post('/upload');
-    //    files.forEach((file)=> {
-    //        req.attach(file.name, file);
-    //    });
-    //    req.end(callback);
-    //}
-    onDrop: function (files) {
-        console.log('Received files: ', files);
+    onDrop:
+        //function (files) {
+        //this.setState({
+        //    files: files
+        //});
     },
+        //function(files){
+        //var req = request.post('/upload');
+        //files.forEach((file)=> {
+        //    req.attach(file.name, file);
+        //});
+        //req.end(callback);
+    //},
+    //onDrop: function (files) {
+    //    console.log('Received files: ', files);
+    //},
 
     render: function () {
         return (
