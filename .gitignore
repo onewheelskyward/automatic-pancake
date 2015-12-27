@@ -1,3 +1,5 @@
 node_modules
 .node-version
 .idea
+server/files
+client/bundle.js

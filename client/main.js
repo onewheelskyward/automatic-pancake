@@ -11,27 +11,13 @@ ReactDOM.render(
 
 var DropzoneDemo = React.createClass({
     onDrop: function(files){
-        var req = request.post('/upload');
+        // TODO: Make the server a configurable param.
+        var req = request.post('http://localhost:3456/upload');
         files.forEach((file)=> {
             req.attach(file.name, file);
         });
         req.end('');
     },
-        //function (files) {
-        //this.setState({
-        //    files: files
-        //});
-    //},
-        //function(files){
-        //var req = request.post('/upload');
-        //files.forEach((file)=> {
-        //    req.attach(file.name, file);
-        //});
-        //req.end(callback);
-    //},
-    //onDrop: function (files) {
-    //    console.log('Received files: ', files);
-    //},
 
     render: function () {
         return (
