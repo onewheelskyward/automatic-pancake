@@ -26,9 +26,6 @@ app.post('/upload', function (req, res) {
         console.log("Uploading: " + fieldname);
         fstream = fs.createWriteStream(__dirname + '/files/' + fieldname);
         file.pipe(fstream);
-        fstream.on('close', function () {
-            res.redirect('back');
-        });
     });
 });
 
