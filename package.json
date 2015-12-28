@@ -4,11 +4,17 @@
   "description": "React to sound!",
   "main": "main.js",
   "dependencies": {
+    "babel": "^6.3.26",
+    "babel-preset-react": "^6.3.13",
+    "babelify": "^7.2.0",
     "browserify": "^12.0.1",
     "connect-busboy": "0.0.2",
     "express": "^4.13.3",
     "fs": "0.0.2",
     "pg": "^4.4.3",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-dropzone": "^3.3.0",
     "superagent": "^1.6.1"
   },
   "devDependencies": {},
