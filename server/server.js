@@ -58,8 +58,14 @@ app.get('/', function (req, res) {
     res.send('Hello World!');
 });
 
+app.get('/files', function (req, res) {
+    db.query('SELECT * FROM files', [], function(err, result) {
+        if(handleError(err)) return;
+        res.send(result.rows);
+    });
+});
+
 app.post('/upload', function (req, res) {
-    //res.send(req.files.path)
     cors(res);
     var fstream;
     req.pipe(req.busboy);
