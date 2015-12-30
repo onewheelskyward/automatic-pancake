@@ -11,8 +11,8 @@ DB Setup
 
 TODO
 ====
-Create metadata table
-deletes
-runtimes
-store usages
-user auth
+- Create metadata table
+- deletes
+- runtimes
+- store usages
+- user auth
