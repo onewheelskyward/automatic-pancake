@@ -59,6 +59,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/files', function (req, res) {
+    cors(res);
     db.query('SELECT * FROM files', [], function(err, result) {
         if(handleError(err)) return;
         res.send(result.rows);

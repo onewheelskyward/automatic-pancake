@@ -32,21 +32,31 @@ var DropzoneDemo = React.createClass({
 
 ReactDOM.render(<DropzoneDemo />, document.getElementById('dropzone'));
 
-var data = [
-    {id: 1, filename: "Pete Hunt", created: "1/1/1"}
-];
-
 var SoundBox = React.createClass({
+    getInitialState: function() {
+        return {data: []};
+    },
+    componentDidMount: function() {
+        req = request.get(this.props.url)
+                .end(function (err, res) {
+                    console.log(res.body);
+                    console.log(res);
+                    this.setState({data: res.body})
+                }.bind(this));
+    },
     render: function() {
         return (
             <div className="soundBox">
-                <SoundList data={this.props.data} />
+                <SoundList data={this.state.data} />
             </div>
         );
     }
 });
 
 var SoundList = React.createClass({
+    propTypes: {
+        data: React.PropTypes.array.isRequired
+    },
     render: function() {
         var soundNodes = this.props.data.map(function(sound) {
             return (
@@ -77,6 +87,6 @@ var Sound = React.createClass({
 });
 
 ReactDOM.render(
-    <SoundBox data={data} url="localhost:3456/files"/>,
+    <SoundBox url="http://localhost:3456/files"/>,
     document.getElementById('sounds')
 );
