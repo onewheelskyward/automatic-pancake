@@ -15,6 +15,7 @@ var DropzoneDemo = React.createClass({
         var req = request.post('http://localhost:3456/upload');
         files.forEach((file)=> {
             req.attach(file.name, file);
+            this.setState({filename: file.name});
         });
         req.end('callback');
     },
@@ -39,8 +40,6 @@ var SoundBox = React.createClass({
     componentDidMount: function() {
         req = request.get(this.props.url)
                 .end(function (err, res) {
-                    console.log(res.body);
-                    console.log(res);
                     this.setState({data: res.body})
                 }.bind(this));
     },
@@ -76,13 +75,22 @@ var SoundList = React.createClass({
 var Sound = React.createClass({
     render: function() {
         return (
-            <div className="sound">
+            <div onClick={this.handleClick} className="sound">
                 <h2 className="filename">
                     {this.props.filename}
                 </h2>
                 {this.props.children}
             </div>
         );
+    },
+    handleClick: function(event) {
+        //console.log(event);
+        var req = request.post('http://localhost:3456/play')
+            .send({filename: this.props.filename});
+        req.end('callback');
+        //console.log(this.props);
+        //console.log(this.props.filename);
+        //console.log(this.props.key);
     }
 });
 

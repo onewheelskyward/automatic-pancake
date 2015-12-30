@@ -2,8 +2,10 @@ var fs = require('fs');
 //var path = require('path');
 var express = require('express');
 var busboy = require('connect-busboy');
+var exec = require('child_process').exec;
 var app = express();
 var pg = require('pg');
+var bodyParser = require('body-parser')
 
 var conString = "postgres://akreps@localhost/automatic-pancake";
 
@@ -11,8 +13,15 @@ app.set('port', 3456);
 app.use(busboy());
 
 //app.use('/', express.static(path.join(__dirname, 'public')));
-//app.use(bodyParser.json());
-//app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:7999');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    next();
+});
 
 var db = new pg.Client(conString);
 db.connect(function(err) {
@@ -31,11 +40,12 @@ db.connect(function(err) {
     });
 });
 
-var cors = function (res) {
-    // TODO: Lock down cors, somewhat.
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-};
+//var cors = function (res) {
+//     TODO: Lock down cors, somewhat.
+    //res.header("Access-Control-Allow-Origin", "*");
+    //res.header("Access-Control-Allow-Methods", "GET, POST");
+    //res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//};
 
 var handleError = function(err) {
     // no error occurred, continue with the request
@@ -54,20 +64,35 @@ var handleError = function(err) {
     return true;
 };
 
+var play = function(word) {
+    command = "/usr/local/bin/mpg123 /Users/akreps/Dropbox/src/automatic-pancake/server/files/" + word;
+    console.log("Execing " + command);
+
+    exec(command, function (error, stdout, stderr) {
+        if (error !== null) {
+            console.log('exec error: ' + error);
+        }
+    });
+}
+
 app.get('/', function (req, res) {
     res.send('Hello World!');
 });
 
 app.get('/files', function (req, res) {
-    cors(res);
     db.query('SELECT * FROM files', [], function(err, result) {
         if(handleError(err)) return;
         res.send(result.rows);
     });
 });
 
+app.post('/play', function(req, res) {
+    console.log(req.body.filename);
+    play(req.body.filename);
+    res.send();
+});
+
 app.post('/upload', function (req, res) {
-    cors(res);
     var fstream;
     req.pipe(req.busboy);
     req.busboy.on('file', function (fieldname, file) {

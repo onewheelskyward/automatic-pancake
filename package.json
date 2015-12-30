@@ -7,6 +7,7 @@
     "babel": "^6.3.26",
     "babel-preset-react": "^6.3.13",
     "babelify": "^7.2.0",
+    "body-parser": "^1.14.2",
     "browserify": "^12.0.1",
     "connect-busboy": "0.0.2",
     "express": "^4.13.3",
@@ -17,7 +18,9 @@
     "react-dropzone": "^3.3.0",
     "superagent": "^1.6.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "watchify": "^3.6.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
