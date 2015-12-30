@@ -13,6 +13,7 @@
     "express": "^4.13.3",
     "fs": "0.0.2",
     "pg": "^4.4.3",
+    "play-sound": "0.0.7",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "react-dropzone": "^3.3.0",

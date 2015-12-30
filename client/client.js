@@ -84,13 +84,9 @@ var Sound = React.createClass({
         );
     },
     handleClick: function(event) {
-        //console.log(event);
         var req = request.post('http://localhost:3456/play')
             .send({filename: this.props.filename});
         req.end('callback');
-        //console.log(this.props);
-        //console.log(this.props.filename);
-        //console.log(this.props.key);
     }
 });
 

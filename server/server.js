@@ -2,7 +2,7 @@ var fs = require('fs');
 //var path = require('path');
 var express = require('express');
 var busboy = require('connect-busboy');
-var exec = require('child_process').exec;
+//var exec = require('child_process').exec;
 var app = express();
 var pg = require('pg');
 var bodyParser = require('body-parser')
@@ -40,13 +40,6 @@ db.connect(function(err) {
     });
 });
 
-//var cors = function (res) {
-//     TODO: Lock down cors, somewhat.
-    //res.header("Access-Control-Allow-Origin", "*");
-    //res.header("Access-Control-Allow-Methods", "GET, POST");
-    //res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//};
-
 var handleError = function(err) {
     // no error occurred, continue with the request
     if(!err) return false;
@@ -65,14 +58,14 @@ var handleError = function(err) {
 };
 
 var play = function(word) {
-    command = "/usr/local/bin/mpg123 /Users/akreps/Dropbox/src/automatic-pancake/server/files/" + word;
-    console.log("Execing " + command);
-
-    exec(command, function (error, stdout, stderr) {
-        if (error !== null) {
-            console.log('exec error: ' + error);
-        }
-    });
+    //command = "/usr/local/bin/mpg123 /Users/akreps/Dropbox/src/automatic-pancake/server/files/" + word;
+    //console.log("Execing " + command);
+    //
+    //exec(command, function (error, stdout, stderr) {
+    //    if (error !== null) {
+    //        console.log('exec error: ' + error);
+    //    }
+    //});
 }
 
 app.get('/', function (req, res) {
