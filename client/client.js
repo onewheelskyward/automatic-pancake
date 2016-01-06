@@ -3,6 +3,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Dropzone = require('react-dropzone');
 var request = require('superagent');
+var baseUri = 'http://localhost:3456';
 
 ReactDOM.render(
     <h1>Hello, world!</h1>,
@@ -11,20 +12,19 @@ ReactDOM.render(
 
 var DropzoneDemo = React.createClass({
     onDrop: function(files){
-        // TODO: Make the server a configurable param.
-        var req = request.post('http://localhost:3456/upload');
+        var req = request.post(baseUri + '/upload');
         files.forEach((file)=> {
             req.attach(file.name, file);
             this.setState({filename: file.name});
         });
-        req.end('callback');
+        req.end(); // 'callback' goes here.
     },
 
     render: function () {
         return (
             <div>
                 <Dropzone onDrop={this.onDrop}>
-                    <div>Try dropping some files here, or click to select files to upload.</div>
+                    <div>Enter the dropzone, or click to select.</div>
                 </Dropzone>
             </div>
         );
@@ -81,7 +81,7 @@ var Sound = React.createClass({
         );
     },
     handleClick: function(event) {
-        var req = request.post('http://localhost:3456/play')
+        var req = request.post(baseUri + '/play')
             .send({filename: this.props.filename});
         req.end(); // 'callback' goes here.
     }
@@ -101,7 +101,7 @@ var Kill = React.createClass({
         );
     },
     handleClick: function(event) {
-        var req = request.post('http://localhost:3456/kill')
+        var req = request.post(baseUri + '/kill')
             .send();
         req.end(); // 'callback' goes here.
     }
