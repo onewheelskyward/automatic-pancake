@@ -76,21 +76,38 @@ var Sound = React.createClass({
     render: function() {
         return (
             <div onClick={this.handleClick} className="sound">
-                <h2 className="filename">
-                    {this.props.filename}
-                </h2>
-                {this.props.children}
+                {this.props.filename}
             </div>
         );
     },
     handleClick: function(event) {
         var req = request.post('http://localhost:3456/play')
             .send({filename: this.props.filename});
-        req.end('callback');
+        req.end(); // 'callback' goes here.
     }
 });
 
 ReactDOM.render(
     <SoundBox url="http://localhost:3456/files"/>,
     document.getElementById('sounds')
+);
+
+var Kill = React.createClass({
+    render: function() {
+        return (
+            <div onClick={this.handleClick} className="kill">
+                Kill
+            </div>
+        );
+    },
+    handleClick: function(event) {
+        var req = request.post('http://localhost:3456/kill')
+            .send();
+        req.end(); // 'callback' goes here.
+    }
+});
+
+ReactDOM.render(
+    <Kill/>,
+    document.getElementById('kill')
 );
