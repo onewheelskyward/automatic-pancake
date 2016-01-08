@@ -59,7 +59,7 @@ var SoundList = React.createClass({
     render: function() {
         var soundNodes = this.props.data.map(function(sound) {
             return (
-                <Sound filename={sound.filename} key={sound.id}>
+                <Sound filename={sound.filename} id={sound.id} key={sound.id}>
                     {sound.created}
                 </Sound>
             );
@@ -81,8 +81,7 @@ var Sound = React.createClass({
         );
     },
     handleClick: function(event) {
-        var req = request.post(baseUri + '/play')
-            .send({filename: this.props.filename});
+        var req = request.post(baseUri + '/play/' + this.props.id);
         req.end(); // 'callback' goes here.
     }
 });

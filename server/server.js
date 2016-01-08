@@ -26,23 +26,6 @@ app.use(function (req, res, next) {
     next();
 });
 
-//var db = new pg.Client(conString);
-//db.connect(function (err) {
-//    if (err) {
-//        return console.error('could not connect to postgres', err);
-//    }
-//    // Interesting way to check for success.
-//    db.query('SELECT NOW() AS "theTime"', function (err, result) {
-//        if (err) {
-//            return console.error('error running query', err);
-//        }
-//        console.log('Fun with postgres: ' + result.rows[0].theTime);
-//        //output: Tue Jan 15 2013 19:12:47 GMT-600 (CST)
-//        // what the what
-//        //db.end();
-//    });
-//});
-
 pg.connect(conString, function(err, client, done) {
     if(err) {
         return console.error('error fetching client from pool', err);
@@ -76,13 +59,18 @@ pg.connect(conString, function(err, client, done) {
         return true;
     };
 
-    var play = function (word) {
-        var fullpath = __dirname + '/files/' + word;
-        console.log("Playing" + fullpath);
+    var play = function (id) {
+        var fullpath = __dirname + '/files/';
+        client.query('SELECT filename FROM files WHERE id = $1', [id], function (err, result) {
+            handleError(err);
+            fullpath += result.rows[0].filename;
+            console.log("Playing " + fullpath);
 
-        player.play(fullpath, function (err) {
-            // Nulls show up a lot.  ¯\_(ツ)_/¯
-            console.log('Play error' + err);
+            player.play(fullpath, function (err) {
+                // Nulls show up a lot.  ¯\_(ツ)_/¯
+                console.log('Play error ' + err);
+            });
+            done();
         });
         console.log(fullpath + " done!");
     };
@@ -91,27 +79,31 @@ pg.connect(conString, function(err, client, done) {
         return req.headers['x-forwarded-for'] || req.connection.remoteAddress
     };
 
+    var track = function(req, id) {
+        client.query('INSERT INTO tracking (ip_address, file_id) VALUES ($1, $2)', [getIp(req), id], function (err, result) {
+            handleError(err);
+            console.log(result);
+            done();
+        });
+    };
+
     app.get('/', function (req, res) {
         res.send('Hello World!');
     });
 
     app.get('/files', function (req, res) {
-        client.query('SELECT * FROM files', [], function (err, result) {
+        client.query('SELECT * FROM files WHERE id > 1', [], function (err, result) {
             if (handleError(err)) return;
             res.send(result.rows);
             done();
         });
     });
 
-    app.post('/play', function (req, res) {
-        console.log(req.body.filename);
+    app.post('/play/:id', function (req, res) {
+        console.log('Playing ' + req.params.id);
         // Check that filename exists in db.
-        client.query('INSERT INTO tracking (ip_address, file_id) VALUES ($1, (SELECT id FROM files WHERE filename = $2))', [getIp(req), req.body.filename], function (err, result) {
-            handleError(err);
-            console.log(result);
-            done();
-        });
-        play(req.body.filename);
+        track(req, req.params.id);
+        play(req.params.id);
         res.send();
     });
 
@@ -131,6 +123,7 @@ pg.connect(conString, function(err, client, done) {
     });
 
     app.post('/kill', function (req, res) {
+        track(req, 'KILL');
         exec('killall mplayer', function (error, stdout, stderr) {
             console.log(stdout);
         });
