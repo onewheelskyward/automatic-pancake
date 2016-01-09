@@ -17,3 +17,11 @@ TODO
 - deletes
 - runtimes
 - user auth
+- rethink?
+- appliancing
+- cloud polling
+- jukebox mode
+- tab-based filtered soundboards
+- real-time output via wss to front-end
+- MOAR FARTS
+- play in client
