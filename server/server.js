@@ -7,11 +7,9 @@ var express = require('express');
 var busboy = require('connect-busboy');
 var exec = require('child_process').exec;
 var app = express();
-var pg = require('pg');
-var bodyParser = require('body-parser')
-var player = require('play-sound') ( opts = {} );
-
-var conString = "postgres://akreps@localhost/automatic-pancake";
+var r = require('rethinkdb');
+var bodyParser = require('body-parser');
+var player = require('play-sound')(opts = {});
 
 app.set('port', 3456);
 app.use(busboy());
@@ -26,113 +24,98 @@ app.use(function (req, res, next) {
     next();
 });
 
-pg.connect(conString, function(err, client, done) {
-    if(err) {
-        return console.error('error fetching client from pool', err);
-    }
-    client.query('SELECT $1::int AS number', ['1'], function(err, result) {
-        //call `done()` to release the client back to the pool
-        done();
+// Initialize the rethink connection.
+var connection = null;
 
-        if(err) {
-            return console.error('error running query', err);
-        }
-        console.log(result.rows[0].number);
-        //output: 1
-    });
+r.connect({host: 'localhost', port: 28015}, function (err, conn) {
+    if (err) throw err;
+    connection = conn;
+});
 
-    var handleError = function (err) {
-        // no error occurred, continue with the request
-        console.log('handleError handling: ' + err);
-        if (!err) return false;
+var database = 'automaticpancake';
+var tables = {files: 'files', tracking: 'tracking'};
 
-        // An error occurred, remove the client from the connection pool.
-        // A truthy value passed to done will remove the connection from the pool
-        // instead of simply returning it to be reused.
-        // In this case, if we have successfully received a client (truthy)
-        // then it will be removed from the pool.
-        if (client) {
-            done(client);
-        }
-        //res.writeHead(500, {'content-type': 'text/plain'});
-        //res.end('An error occurred');
-        return true;
-    };
+//function tableCreate(tableName) {
+//    r.db(database).tableCreate(tableName).run(connection, function(err, result) {
+//        if (err) throw err;
+//        logDbCall(result);
+//    });
+//}
 
-    var play = function (id) {
-        var fullpath = __dirname + '/files/';
-        client.query('SELECT filename FROM files WHERE id = $1', [id], function (err, result) {
-            done();
-            handleError(err);
-            fullpath += result.rows[0].filename;
-            console.log("Playing " + fullpath);
+function logDbCall(result) {
+    console.log(JSON.stringify(result, null, 2));
+}
 
-            player.play(fullpath, function (err) {
-                // Nulls show up a lot.  ¯\_(ツ)_/¯
-                console.log('Play error ' + err);
-            });
-            done();
+//tableCreate(tables.files);
+//tableCreate(tables.tracking);
+
+var play = function (id) {
+    var fullpath = __dirname + '/files/';
+    r.table(tables.files).get(id).run(connection, function(err, cursor) {
+        //filter(r.row('id').eq(id))
+        fullpath += result.filename;
+        console.log("Playing " + fullpath);
+
+        player.play(fullpath, function (err) {
+            // Nulls show up a lot.  ¯\_(ツ)_/¯
+            console.log('Play error ' + err);
         });
-        console.log(fullpath + " done!");
-    };
+    });
+};
 
-    var getIp = function(req) {
-        return req.headers['x-forwarded-for'] || req.connection.remoteAddress
-    };
+var getIp = function (req) {
+    return req.headers['x-forwarded-for'] || req.connection.remoteAddress
+};
 
-    var track = function(req, id) {
-        client.query('INSERT INTO tracking (ip_address, file_id) VALUES ($1, $2)', [getIp(req), id], function (err, result) {
-            done();
-            handleError(err);
-            console.log(result);
+var track = function (req, id) {
+    r.table('tracking').insert([{ipAddress: getIp(req), fileId: id}])
+};
+
+app.get('/', function (req, res) {
+    res.send('Hello World!');
+});
+
+app.get('/files', function (req, res) {
+    r.table(tables.files).run(connection, function(err, cursor) {
+        if (err) throw err;
+        cursor.toArray(function(err, result) {
+            res.send(result);
         });
-    };
-
-    app.get('/', function (req, res) {
-        res.send('Hello World!');
     });
+    res.send();
+});
 
-    app.get('/files', function (req, res) {
-        client.query('SELECT * FROM files WHERE id > 1', [], function (err, result) {
-            done();
-            if (handleError(err)) return;
-            res.send(result.rows);
+app.post('/play/:id', function (req, res) {
+    console.log('Playing ' + req.params.id);
+    // Check that filename exists in db.
+    track(req, req.params.id);
+    play(req.params.id);
+    res.send();
+});
+
+app.post('/upload', function (req, res) {
+    var fstream;
+    req.pipe(req.busboy);
+    req.busboy.on('file', function (fieldname, file) {
+        console.log("Uploading: " + fieldname);
+        fstream = fs.createWriteStream(__dirname + '/files/' + fieldname);
+        file.pipe(fstream);
+        r.table(tables.files).insert([{ file: fieldname, created: new Date()}]).run(connection, function(err, result) {
+            if (err) throw err;
+            logDbCall(result);
         });
-        res.send();
     });
+    res.send();
+});
 
-    app.post('/play/:id', function (req, res) {
-        console.log('Playing ' + req.params.id);
-        // Check that filename exists in db.
-        track(req, req.params.id);
-        play(req.params.id);
-        res.send();
+app.post('/kill', function (req, res) {
+    track(req, 'KILL');
+    exec('killall mplayer', function (error, stdout, stderr) {
+        console.log(stdout);
     });
+    res.send();
+});
 
-    app.post('/upload', function (req, res) {
-        var fstream;
-        req.pipe(req.busboy);
-        req.busboy.on('file', function (fieldname, file) {
-            console.log("Uploading: " + fieldname);
-            fstream = fs.createWriteStream(__dirname + '/files/' + fieldname);
-            file.pipe(fstream);
-            client.query('INSERT INTO files (filename, created) VALUES ($1, $2)', [fieldname, new Date()], function (err, result) {
-                done();
-                handleError(err);
-            });
-        });
-        res.send();
-    });
-
-    app.post('/kill', function (req, res) {
-        track(req, 'KILL');
-        exec('killall mplayer', function (error, stdout, stderr) {
-            console.log(stdout);
-        });
-        res.send();
-    });
-
-    app.listen(app.get('port'), function () {
-        console.log('Server started: http://localhost:' + app.get('port') + '/');
-    });
+app.listen(app.get('port'), function () {
+    console.log('Server started: http://localhost:' + app.get('port') + '/');
 });
