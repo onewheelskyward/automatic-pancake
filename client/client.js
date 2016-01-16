@@ -59,7 +59,7 @@ var SoundList = React.createClass({
     render: function() {
         var soundNodes = this.props.data.map(function(sound) {
             return (
-                <Sound filename={sound.filename} id={sound.id} key={sound.id}>
+                <Sound filename={sound.file} id={sound.id} key={sound.id}>
                     {sound.created}
                 </Sound>
             );

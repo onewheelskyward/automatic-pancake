@@ -27,7 +27,7 @@ app.use(function (req, res, next) {
 // Initialize the rethink connection.
 var connection = null;
 
-r.connect({host: 'localhost', port: 28015}, function (err, conn) {
+r.connect({host: 'localhost', port: 28015, database: 'automaticpancake'}, function (err, conn) {
     if (err) throw err;
     connection = conn;
 });
@@ -51,14 +51,16 @@ function logDbCall(result) {
 
 var play = function (id) {
     var fullpath = __dirname + '/files/';
-    r.table(tables.files).get(id).run(connection, function(err, cursor) {
+    r.db(database).table(tables.files).get(id).run(connection, function(err, result) {
         //filter(r.row('id').eq(id))
-        fullpath += result.filename;
+        fullpath += result.file;
         console.log("Playing " + fullpath);
 
         player.play(fullpath, function (err) {
             // Nulls show up a lot.  ¯\_(ツ)_/¯
-            console.log('Play error ' + err);
+            if (err) {
+                console.log('Play error ' + err);
+            }
         });
     });
 };
@@ -68,7 +70,7 @@ var getIp = function (req) {
 };
 
 var track = function (req, id) {
-    r.table('tracking').insert([{ipAddress: getIp(req), fileId: id}])
+    r.db(database).table('tracking').insert([{ipAddress: getIp(req), fileId: id}])
 };
 
 app.get('/', function (req, res) {
@@ -76,13 +78,12 @@ app.get('/', function (req, res) {
 });
 
 app.get('/files', function (req, res) {
-    r.table(tables.files).run(connection, function(err, cursor) {
+    r.db(database).table(tables.files).run(connection, function(err, cursor) {
         if (err) throw err;
         cursor.toArray(function(err, result) {
             res.send(result);
         });
     });
-    res.send();
 });
 
 app.post('/play/:id', function (req, res) {
@@ -100,7 +101,7 @@ app.post('/upload', function (req, res) {
         console.log("Uploading: " + fieldname);
         fstream = fs.createWriteStream(__dirname + '/files/' + fieldname);
         file.pipe(fstream);
-        r.table(tables.files).insert([{ file: fieldname, created: new Date()}]).run(connection, function(err, result) {
+        r.db(database).table(tables.files).insert([{ file: fieldname, created: new Date()}]).run(connection, function(err, result) {
             if (err) throw err;
             logDbCall(result);
         });
