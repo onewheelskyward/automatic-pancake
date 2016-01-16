@@ -62,6 +62,7 @@ pg.connect(conString, function(err, client, done) {
     var play = function (id) {
         var fullpath = __dirname + '/files/';
         client.query('SELECT filename FROM files WHERE id = $1', [id], function (err, result) {
+            done();
             handleError(err);
             fullpath += result.rows[0].filename;
             console.log("Playing " + fullpath);
@@ -81,9 +82,9 @@ pg.connect(conString, function(err, client, done) {
 
     var track = function(req, id) {
         client.query('INSERT INTO tracking (ip_address, file_id) VALUES ($1, $2)', [getIp(req), id], function (err, result) {
+            done();
             handleError(err);
             console.log(result);
-            done();
         });
     };
 
@@ -93,10 +94,11 @@ pg.connect(conString, function(err, client, done) {
 
     app.get('/files', function (req, res) {
         client.query('SELECT * FROM files WHERE id > 1', [], function (err, result) {
+            done();
             if (handleError(err)) return;
             res.send(result.rows);
-            done();
         });
+        res.send();
     });
 
     app.post('/play/:id', function (req, res) {
@@ -115,8 +117,8 @@ pg.connect(conString, function(err, client, done) {
             fstream = fs.createWriteStream(__dirname + '/files/' + fieldname);
             file.pipe(fstream);
             client.query('INSERT INTO files (filename, created) VALUES ($1, $2)', [fieldname, new Date()], function (err, result) {
-                if (handleError(err)) return;
                 done();
+                handleError(err);
             });
         });
         res.send();
