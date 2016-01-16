@@ -38,10 +38,14 @@ var SoundBox = React.createClass({
         return {data: []};
     },
     componentDidMount: function() {
+        this.getFiles();
+        setInterval(this.getFiles, this.props.pollInterval);
+    },
+    getFiles: function () {
         req = request.get(this.props.url)
-                .end(function (err, res) {
-                    this.setState({data: res.body})
-                }.bind(this));
+            .end(function (err, res) {
+                this.setState({data: res.body})
+            }.bind(this));
     },
     render: function() {
         return (
@@ -87,7 +91,7 @@ var Sound = React.createClass({
 });
 
 ReactDOM.render(
-    <SoundBox url="http://localhost:3456/files"/>,
+    <SoundBox url="http://localhost:3456/files" pollInterval={2000}/>,
     document.getElementById('sounds')
 );
 

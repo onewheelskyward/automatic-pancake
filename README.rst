@@ -5,8 +5,7 @@ Installing
 
 Postgresql- create database and edit config (when I make them).
 
-``brew install mplayer``
-``brew install rethinkdb``
+``brew install mplayer rethinkdb``
 
 DB Setup
 ====
