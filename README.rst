@@ -1,15 +1,16 @@
+.. role:: strike
+
 Installing
 ====
 
 Postgresql- create database and edit config (when I make them).
 
 ``brew install mplayer``
+``brew install rethinkdb``
 
 DB Setup
 ====
-``create table files (id serial, filename varchar(2048), created timestamp default now());``
-``create table tracking (id serial, file_id integer, ip_address varchar(50), created timestamp default now());``
-``insert into files (filename) values ('KILL');``
+Log into http://localhost:8080 and create the database and the ``files`` and ``tracking`` tables within it.
 
 TODO
 ====
@@ -17,7 +18,7 @@ TODO
 - deletes
 - runtimes
 - user auth
-- rethink?
+- :strike:`rethink!`
 - appliancing
 - cloud polling
 - jukebox mode
