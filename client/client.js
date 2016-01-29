@@ -91,7 +91,7 @@ var Sound = React.createClass({
 });
 
 ReactDOM.render(
-    <SoundBox url="http://localhost:3456/files" pollInterval={2000}/>,
+    <SoundBox url="http://localhost:3456/files" pollInterval={5000}/>,
     document.getElementById('sounds')
 );
 
@@ -114,3 +114,33 @@ ReactDOM.render(
     <Kill/>,
     document.getElementById('kill')
 );
+
+var YoutubeForm = React.createClass({
+    handleSubmit: function(e) {
+        e.preventDefault();
+        var uri = this.state.uri.trim();
+        if (!uri) {
+            return;
+        }
+        // TODO: send request to the server
+        console.log(uri);
+        this.setState({uri: ''});
+    },
+    render: function() {
+        return (
+            <form className="youtubeForm" onSubmit={this.handleSubmit}>
+                <input
+                    type="text"
+                    placeholder="Youtube URI/v=code"
+                    value={this.state.uri}
+                />
+                <input type="submit" value="Post" />
+            </form>
+        );
+    }
+});
+
+ReactDOM.render(
+    <YoutubeForm/>,
+    document.getElementById('youtubeform')
+)

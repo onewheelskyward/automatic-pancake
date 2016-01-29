@@ -4,3 +4,4 @@ node_modules
 server/files
 client/bundle.js
 .DS_Store
+rethinkdb_data
