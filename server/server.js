@@ -80,7 +80,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/files', function (req, res) {
-    r.db(database).table(tables.files).orderBy('filename').run(connection, function(err, cursor) {
+    r.db(database).table(tables.files).orderBy('file').run(connection, function(err, cursor) {
         if (err) throw err;
         cursor.toArray(function(err, result) {
             res.send(result);
