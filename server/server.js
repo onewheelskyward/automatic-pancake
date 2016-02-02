@@ -9,7 +9,7 @@ var exec = require('child_process').exec;
 var app = express();
 var r = require('rethinkdb');
 var bodyParser = require('body-parser');
-var player = require('play-sound')(opts = {});
+var player = require('play-sound')(opts = {player: 'mplayer'});
 
 app.set('port', 3456);
 app.use(busboy());
@@ -32,6 +32,7 @@ r.connect({host: 'localhost', port: 28015, database: 'automaticpancake'}, functi
     connection = conn;
 });
 
+// Database configuration
 var database = 'automaticpancake';
 var tables = {files: 'files', tracking: 'tracking'};
 
@@ -46,6 +47,7 @@ function logDbCall(result) {
     console.log(JSON.stringify(result, null, 2));
 }
 
+// This...didn't really work.
 //tableCreate(tables.files);
 //tableCreate(tables.tracking);
 
@@ -78,7 +80,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/files', function (req, res) {
-    r.db(database).table(tables.files).run(connection, function(err, cursor) {
+    r.db(database).table(tables.files).orderBy('filename').run(connection, function(err, cursor) {
         if (err) throw err;
         cursor.toArray(function(err, result) {
             res.send(result);
