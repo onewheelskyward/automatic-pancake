@@ -37,6 +37,7 @@ rPI setup
 via http://weworkweplay.com/play/raspberry-pi-nodejs/, current node is 4.2.1
 
 ``wget http://node-arm.herokuapp.com/node_latest_armhf.deb``
+
 ``dpkg -i node_latest_armhf.deb``
 
 Enable audio to audio jack instead of HDMI
@@ -48,4 +49,5 @@ https://www.raspberrypi.org/documentation/configuration/audio-config.md
 Volume control
 
 ``amixer set PCM -- -9999  # off, -99.99dB``
+
 ``amixer set PCM -- 400    # full, +4.00dB``
