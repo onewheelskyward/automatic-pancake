@@ -44,3 +44,8 @@ Enable audio to audio jack instead of HDMI
 ``amixer cset numid=3 1``
 
 https://www.raspberrypi.org/documentation/configuration/audio-config.md
+
+Volume control
+
+amixer set PCM -- -9999  # off, -99.99dB
+amixer set PCM -- 400    # full, +4.00dB
