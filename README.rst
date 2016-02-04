@@ -34,11 +34,13 @@ TODO
 
 rPI setup
 =========
-via http://weworkweplay.com/play/raspberry-pi-nodejs/, current node is 4.2.1:
+via http://weworkweplay.com/play/raspberry-pi-nodejs/, current node is 4.2.1
+
 ``wget http://node-arm.herokuapp.com/node_latest_armhf.deb``
 ``dpkg -i node_latest_armhf.deb``
 
-Enable:
+Enable audio to audio jack instead of HDMI
+
 ``amixer cset numid=3 1``
 
 https://www.raspberrypi.org/documentation/configuration/audio-config.md
