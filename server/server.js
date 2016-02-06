@@ -113,6 +113,11 @@ app.post('/upload', function (req, res) {
 
 app.post('/youtube', function (req, res) {
     console.log(req.body.uri);
+    cmd = "youtube-dl -o " + req.body.uri + ' ' + req.body.uri;
+    console.log("executing " . cmd)
+    exec(cmd, function(error, stdout, stderr) {
+        console.log(stdout);
+    });
 });
 
 app.post('/kill', function (req, res) {
