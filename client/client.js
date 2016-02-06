@@ -11,7 +11,7 @@ ReactDOM.render(
 );
 
 var DropzoneDemo = React.createClass({
-    onDrop: function(files){
+    onDrop: function (files) {
         var req = request.post(baseUri + '/upload');
         files.forEach((file)=> {
             req.attach(file.name, file);
@@ -34,13 +34,13 @@ var DropzoneDemo = React.createClass({
 ReactDOM.render(<DropzoneDemo />, document.getElementById('dropzone'));
 
 var YoutubeForm = React.createClass({
-    getInitialState: function() {
+    getInitialState: function () {
         return {uri: ''};
     },
-    handleUriChange: function(e) {
+    handleUriChange: function (e) {
         this.setState({uri: e.target.value});
     },
-    handleSubmit: function(e) {
+    handleSubmit: function (e) {
         e.preventDefault();
         console.log(e.target.value);
         var uri = this.state.uri.trim();
@@ -49,14 +49,14 @@ var YoutubeForm = React.createClass({
         }
         // TODO: send request to the server
         req = request.post('http://localhost:3456/youtube')
-            .send({ uri: uri })
+            .send({uri: uri})
             .end(function (err, res) {
             }.bind(this));
 
         console.log(uri);
         this.setState({uri: ''});
     },
-    render: function() {
+    render: function () {
         return (
             <form className="youtubeForm" onSubmit={this.handleSubmit}>
                 <input type="text"
@@ -64,17 +64,17 @@ var YoutubeForm = React.createClass({
                        value={this.state.uri}
                        onChange={this.handleUriChange}
                 />
-                <input type="submit" value="Post" />
+                <input type="submit" value="Post"/>
             </form>
         );
     }
 });
 
 var SoundBox = React.createClass({
-    getInitialState: function() {
+    getInitialState: function () {
         return {data: []};
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         this.getFiles();
         setInterval(this.getFiles, this.props.pollInterval);
     },
@@ -84,11 +84,11 @@ var SoundBox = React.createClass({
                 this.setState({data: res.body})
             }.bind(this));
     },
-    render: function() {
+    render: function () {
         return (
             <div className="soundBox">
                 <YoutubeForm />
-                <SoundList data={this.state.data} />
+                <SoundList data={this.state.data}/>
             </div>
         );
     }
@@ -98,8 +98,8 @@ var SoundList = React.createClass({
     propTypes: {
         data: React.PropTypes.array.isRequired
     },
-    render: function() {
-        var soundNodes = this.props.data.map(function(sound) {
+    render: function () {
+        var soundNodes = this.props.data.map(function (sound) {
             return (
                 <Sound filename={sound.file} id={sound.id} key={sound.id}>
                     {sound.created}
@@ -115,14 +115,14 @@ var SoundList = React.createClass({
 });
 
 var Sound = React.createClass({
-    render: function() {
+    render: function () {
         return (
             <div onClick={this.handleClick} className="sound">
                 {this.props.filename}
             </div>
         );
     },
-    handleClick: function(event) {
+    handleClick: function (event) {
         var req = request.post(baseUri + '/play/' + this.props.id);
         req.end(); // 'callback' goes here.
     }
@@ -134,14 +134,14 @@ ReactDOM.render(
 );
 
 var Kill = React.createClass({
-    render: function() {
+    render: function () {
         return (
             <div onClick={this.handleClick} className="kill">
                 Kill
             </div>
         );
     },
-    handleClick: function(event) {
+    handleClick: function (event) {
         var req = request.post(baseUri + '/kill')
             .send();
         req.end(); // 'callback' goes here.
