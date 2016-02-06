@@ -111,6 +111,10 @@ app.post('/upload', function (req, res) {
     res.send();
 });
 
+app.post('/youtube', function (req, res) {
+    console.log(req.body.uri);
+});
+
 app.post('/kill', function (req, res) {
     track(req, 'KILL');
     exec('killall mplayer', function (error, stdout, stderr) {
