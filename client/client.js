@@ -33,6 +33,43 @@ var DropzoneDemo = React.createClass({
 
 ReactDOM.render(<DropzoneDemo />, document.getElementById('dropzone'));
 
+var YoutubeForm = React.createClass({
+    getInitialState: function() {
+        return {uri: ''};
+    },
+    handleUriChange: function(e) {
+        this.setState({uri: e.target.value});
+    },
+    handleSubmit: function(e) {
+        e.preventDefault();
+        console.log(e.target.value);
+        var uri = this.state.uri.trim();
+        if (!uri) {
+            return;
+        }
+        // TODO: send request to the server
+        req = request.post('http://localhost:3456/youtube')
+            .send({ uri: uri })
+            .end(function (err, res) {
+            }.bind(this));
+
+        console.log(uri);
+        this.setState({uri: ''});
+    },
+    render: function() {
+        return (
+            <form className="youtubeForm" onSubmit={this.handleSubmit}>
+                <input type="text"
+                       placeholder="youtube url"
+                       value={this.state.uri}
+                       onChange={this.handleUriChange}
+                />
+                <input type="submit" value="Post" />
+            </form>
+        );
+    }
+});
+
 var SoundBox = React.createClass({
     getInitialState: function() {
         return {data: []};
@@ -50,6 +87,7 @@ var SoundBox = React.createClass({
     render: function() {
         return (
             <div className="soundBox">
+                <YoutubeForm />
                 <SoundList data={this.state.data} />
             </div>
         );
@@ -115,32 +153,4 @@ ReactDOM.render(
     document.getElementById('kill')
 );
 
-var YoutubeForm = React.createClass({
-    handleSubmit: function(e) {
-        e.preventDefault();
-        var uri = this.state.uri.trim();
-        if (!uri) {
-            return;
-        }
-        // TODO: send request to the server
-        console.log(uri);
-        this.setState({uri: ''});
-    },
-    render: function() {
-        return (
-            <form className="youtubeForm" onSubmit={this.handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Youtube URI/v=code"
-                    value={this.state.uri}
-                />
-                <input type="submit" value="Post" />
-            </form>
-        );
-    }
-});
 
-ReactDOM.render(
-    <YoutubeForm/>,
-    document.getElementById('youtubeform')
-);
