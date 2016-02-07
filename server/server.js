@@ -113,7 +113,7 @@ app.post('/upload', function (req, res) {
 
 app.post('/youtube', function (req, res) {
     console.log(req.body.uri);
-    cmd = "youtube-dl -o " + req.body.uri + ' ' + req.body.uri;
+    cmd = "youtube-dl --id -x --write-info-json --audio-format mp3 --no-progress " + req.body.uri + ' ' + req.body.uri;
     console.log("executing " . cmd)
     exec(cmd, function(error, stdout, stderr) {
         console.log(stdout);
