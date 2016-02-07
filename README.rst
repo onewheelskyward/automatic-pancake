@@ -51,3 +51,7 @@ Volume control
 ``amixer set PCM -- -9999  # off, -99.99dB``
 
 ``amixer set PCM -- 400    # full, +4.00dB``
+
+youtube-dl settings
+
+``youtube-dl --id -x --write-info-json --audio-format mp3 --no-progress u2l6nk7pMQ0``
