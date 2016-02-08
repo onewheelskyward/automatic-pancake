@@ -6,8 +6,8 @@ var request = require('superagent');
 var baseUri = 'http://localhost:3456';
 
 ReactDOM.render(
-    <h1>Hello, world!</h1>,
-    document.getElementById('example')
+    <h1>Pancake All The Things</h1>,
+    document.getElementById('header')
 );
 
 var DropzoneDemo = React.createClass({
