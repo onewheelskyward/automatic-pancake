@@ -96,6 +96,13 @@ app.post('/play/:id', function (req, res) {
     res.send();
 });
 
+function addFile(fieldname) {
+    r.db(database).table(tables.files).insert([{ file: fieldname, created: new Date()}]).run(connection, function(err, result) {
+        if (err) throw err;
+        logDbCall(result);
+    });
+}
+
 app.post('/upload', function (req, res) {
     var fstream;
     req.pipe(req.busboy);
@@ -103,10 +110,7 @@ app.post('/upload', function (req, res) {
         console.log("Uploading: " + fieldname);
         fstream = fs.createWriteStream(__dirname + '/files/' + fieldname);
         file.pipe(fstream);
-        r.db(database).table(tables.files).insert([{ file: fieldname, created: new Date()}]).run(connection, function(err, result) {
-            if (err) throw err;
-            logDbCall(result);
-        });
+        addFile(fieldname)
     });
     res.send();
 });
@@ -114,10 +118,11 @@ app.post('/upload', function (req, res) {
 app.post('/youtube', function (req, res) {
     console.log(req.body.uri);
     cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 --no-progress -o '" + __dirname + '/files/' + "%(id)s.%(ext)s' " + req.body.uri;
-    console.log("executing " + cmd)
+    console.log("executing " + cmd);
     exec(cmd, function(error, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
+        addFile(req.body.uri + '.mp3');
     });
 });
 
