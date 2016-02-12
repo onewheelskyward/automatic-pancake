@@ -117,13 +117,14 @@ app.post('/upload', function (req, res) {
 
 app.post('/youtube', function (req, res) {
     console.log(req.body.uri);
-    cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(id)s.%(ext)s' " + req.body.uri;
+    cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + req.body.uri;
     console.log("executing " + cmd);
     exec(cmd, function(error, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
         addFile(req.body.uri + '.mp3');
     });
+    res.send();
 });
 
 app.post('/kill', function (req, res) {
