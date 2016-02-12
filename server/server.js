@@ -97,6 +97,7 @@ app.post('/play/:id', function (req, res) {
 });
 
 function addFile(fieldname) {
+    console.log("Adding file " + fieldname);
     r.db(database).table(tables.files).insert([{ file: fieldname, created: new Date()}]).run(connection, function(err, result) {
         if (err) throw err;
         logDbCall(result);
@@ -115,14 +116,27 @@ app.post('/upload', function (req, res) {
     res.send();
 });
 
+function getTitle(youtubeId, callback) {
+    titleCmd = "youtube-dl -e " + youtubeId;
+    console.log("executing " + titleCmd);
+    exec(titleCmd, function(error, stdout, stderr) {
+        callback(stdout.trim());
+    });
+}
+
 app.post('/youtube', function (req, res) {
-    console.log(req.body.uri);
+    var youtubeId = req.body.uri;
+    console.log(youtubeId);
     cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + req.body.uri;
-    console.log("executing " + cmd);
-    exec(cmd, function(error, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        //addFile(req.body.uri + '.mp3');
+
+    getTitle(youtubeId, function(title) {
+        console.log("executing " + cmd);
+        console.log(title);
+        exec(cmd, function(error, stdout, stderr) {
+            console.log(stdout);
+            console.log(stderr);
+            addFile(title + '.' + youtubeId + '.mp3');
+        })
     });
     res.send();
 });
