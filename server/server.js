@@ -136,9 +136,9 @@ app.post('/youtube', function (req, res) {
             console.log(stdout);
             console.log(stderr);
             addFile(title + '.' + youtubeId + '.mp3');
+            res.send();
         })
     });
-    res.send();
 });
 
 app.post('/kill', function (req, res) {
