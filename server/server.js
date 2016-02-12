@@ -121,7 +121,7 @@ function getTitle(youtubeId, callback) {
     titleCmd = "youtube-dl -e " + youtubeId;
     console.log("executing " + titleCmd);
     exec(titleCmd, function(error, stdout, stderr) {
-        callback(stdout.trim().replace(/:/g, ' -').replace(/"/g, "'"));
+        callback(stdout.trim().replace(/:/g, ' -').replace(/"/g, "'").replace(/\//g, '_'));
     });
 }
 
