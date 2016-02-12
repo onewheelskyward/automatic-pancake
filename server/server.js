@@ -135,6 +135,10 @@ app.post('/kill', function (req, res) {
     res.send();
 });
 
+app.post('/delall', function(req, res) {
+    r.db(database).table(tables.files).delete().run(connection);
+});
+
 app.listen(app.get('port'), function () {
     console.log('Server started: http://localhost:' + app.get('port') + '/');
 });
