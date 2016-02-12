@@ -101,6 +101,7 @@ function addFile(fieldname) {
     r.db(database).table(tables.files).insert([{ file: fieldname, created: new Date()}]).run(connection, function(err, result) {
         if (err) throw err;
         logDbCall(result);
+        play(result.generated_keys[0]);
     });
 }
 
