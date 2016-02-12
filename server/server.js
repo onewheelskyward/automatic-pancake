@@ -122,7 +122,7 @@ app.post('/youtube', function (req, res) {
     exec(cmd, function(error, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
-        addFile(req.body.uri + '.mp3');
+        //addFile(req.body.uri + '.mp3');
     });
     res.send();
 });
