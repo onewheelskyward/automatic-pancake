@@ -55,3 +55,7 @@ Volume control
 youtube-dl settings
 
 ``youtube-dl --id -x --write-info-json --audio-format mp3 --no-progress u2l6nk7pMQ0``
+
+~/.mplayer/config:
+
+``really-quiet="1" #Very very little console output``
