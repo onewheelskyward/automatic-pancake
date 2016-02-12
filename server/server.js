@@ -152,6 +152,12 @@ app.post('/kill', function (req, res) {
 
 app.post('/delall', function(req, res) {
     r.db(database).table(tables.files).delete().run(connection);
+    res.send();
+});
+
+app.delete('/:id', function(req, res) {
+    r.db(database).table(tables.files).get(req.params.id).delete().run(connection);
+    res.send();
 });
 
 app.listen(app.get('port'), function () {
