@@ -76,9 +76,10 @@ var track = function (req, id) {
 };
 
 app.get('/', function (req, res) {
-    res.send('Hello World!');
+    res.send('pancakes');
 });
 
+// GET /files - return json listing of files, names and ids used to display the frontend.
 app.get('/files', function (req, res) {
     r.db(database).table(tables.files).orderBy('file').run(connection, function(err, cursor) {
         if (err) throw err;
@@ -88,6 +89,16 @@ app.get('/files', function (req, res) {
     });
 });
 
+app.get('/tracking', function (req, res) {
+    r.db(database).table(tables.tracking).run(connection, function(err, cursor) {
+        if (err) throw err;
+        cursor.toArray(function(err, result) {
+            res.send(result);
+        });
+    });
+});
+
+// POST /play/u-u-i-d - Make it so.
 app.post('/play/:id', function (req, res) {
     console.log('Playing ' + req.params.id);
     // Check that filename exists in db.
@@ -96,6 +107,7 @@ app.post('/play/:id', function (req, res) {
     res.send();
 });
 
+// Add the file to rethink and autoplay.
 function addFile(fieldname) {
     console.log("Adding file " + fieldname);
     r.db(database).table(tables.files).insert([{ file: fieldname, created: new Date()}]).run(connection, function(err, result) {
@@ -105,6 +117,7 @@ function addFile(fieldname) {
     });
 }
 
+// POST /upload - Drop a file, add and play it.
 app.post('/upload', function (req, res) {
     var fstream;
     req.pipe(req.busboy);
@@ -117,6 +130,7 @@ app.post('/upload', function (req, res) {
     res.send();
 });
 
+// Grab the youtube title with minimal transformation based on discovery of what youtube-dl does to drop valid filenames.
 function getTitle(youtubeId, callback) {
     titleCmd = "youtube-dl -e " + youtubeId;
     console.log("executing " + titleCmd);
@@ -125,6 +139,7 @@ function getTitle(youtubeId, callback) {
     });
 }
 
+// POST /youtube - grab a 'tube, strip the audio, add and play it.
 app.post('/youtube', function (req, res) {
     var youtubeId = req.body.uri;
     console.log(youtubeId);
@@ -142,6 +157,7 @@ app.post('/youtube', function (req, res) {
     });
 });
 
+// POST /kill - MAKE IT STOP
 app.post('/kill', function (req, res) {
     track(req, 'KILL');
     exec('killall mplayer', function (error, stdout, stderr) {
@@ -150,11 +166,13 @@ app.post('/kill', function (req, res) {
     res.send();
 });
 
+// POST delall - big ol' reset button.
 app.post('/delall', function(req, res) {
     r.db(database).table(tables.files).delete().run(connection);
     res.send();
 });
 
+// DELETE /u-u-i-d - remove one file
 app.delete('/:id', function(req, res) {
     r.db(database).table(tables.files).get(req.params.id).delete().run(connection);
     res.send();
