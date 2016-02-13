@@ -157,7 +157,7 @@ app.post('/youtube', function (req, res) {
         exec(cmd, function(error, stdout, stderr) {
             console.log(stdout);
             console.log(stderr);
-            addFile(title + '.' + youtubeId + '.mp3');
+            addFile(title + '.' + id + '.mp3');
             res.send();
         })
     });
