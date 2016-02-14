@@ -72,7 +72,7 @@ var getIp = function (req) {
 };
 
 var track = function (req, id) {
-    r.db(database).table('tracking').insert([{ipAddress: getIp(req), fileId: id}])
+    r.db(database).table('tracking').insert([{ipAddress: getIp(req), fileId: id}]).run(connection);
 };
 
 app.get('/', function (req, res) {
