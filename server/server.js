@@ -184,6 +184,37 @@ app.delete('/:id', function(req, res) {
     res.send();
 });
 
+app.get('/vol', function(req, res) {
+    res.send();
+});
+
+// Handle volume changes by percentage of total range.
+// If we need ramping(in case it gets louder too fast), we'll do so in the client.
+//
+// amixer set PCM -- -9999  # off, -99.99dB
+// amixer set PCM -- 400    # full, +4.00dB
+app.post('/vol/:percent', function(req, res) {
+    var percentage = req.params.percent;
+
+    // Some bounds checking.
+    if (percentage > 100) {
+        percentage = 100;
+    }
+    if (percentage < 0) {
+        percentage = 0;
+    }
+
+    var dB = (percentage/100 * 10399) - 9999;
+
+    var cmd = 'amixer set PCM -- ' + dB;
+    console.log(cmd);
+    exec(cmd, function(error, stdout, stderr) {});
+    res.send({
+        volume: percentage + "%",
+        dB: (dB / 100).toFixed(2)
+    });
+});
+
 app.listen(app.get('port'), function () {
     console.log('Server started: http://localhost:' + app.get('port') + '/');
 });
