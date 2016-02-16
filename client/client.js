@@ -60,7 +60,7 @@ var YoutubeForm = React.createClass({
         return (
             <form className="youtubeForm" onSubmit={this.handleSubmit}>
                 <input type="text"
-                       placeholder="youtube url"
+                       placeholder="youtube url or ID"
                        value={this.state.uri}
                        onChange={this.handleUriChange}
                 />
