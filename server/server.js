@@ -108,9 +108,9 @@ app.post('/play/:id', function (req, res) {
 });
 
 // Add the file to rethink and autoplay.
-function addFile(fieldname) {
+function addFile(fieldname, type) {
     console.log("Adding file " + fieldname);
-    r.db(database).table(tables.files).insert([{ file: fieldname, created: new Date()}]).run(connection, function(err, result) {
+    r.db(database).table(tables.files).insert([{ file: fieldname, type: type, created: new Date()}]).run(connection, function(err, result) {
         if (err) throw err;
         logDbCall(result);
         play(result.generated_keys[0]);
@@ -125,7 +125,7 @@ app.post('/upload', function (req, res) {
         console.log("Uploading: " + fieldname);
         fstream = fs.createWriteStream(__dirname + '/files/' + fieldname);
         file.pipe(fstream);
-        addFile(fieldname)
+        addFile(fieldname, 'fx')
     });
     res.send();
 });
@@ -157,7 +157,7 @@ app.post('/youtube', function (req, res) {
         exec(cmd, function(error, stdout, stderr) {
             console.log(stdout);
             console.log(stderr);
-            addFile(title + '.' + id + '.mp3');
+            addFile(title + '.' + id + '.mp3', 'youtube');
             res.send();
         })
     });
