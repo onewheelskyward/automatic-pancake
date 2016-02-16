@@ -79,15 +79,7 @@ app.get('/', function (req, res) {
     res.send('pancakes');
 });
 
-// GET /files - return json listing of files, names and ids used to display the frontend.
-app.get('/files', function (req, res) {
-    r.db(database).table(tables.files).orderBy('file').run(connection, function(err, cursor) {
-        if (err) throw err;
-        cursor.toArray(function(err, result) {
-            res.send(result);
-        });
-    });
-});
+require('./components/files')(app, r.db(database).table(tables.files), connection);
 
 app.get('/tracking', function (req, res) {
     r.db(database).table(tables.tracking).run(connection, function(err, cursor) {
