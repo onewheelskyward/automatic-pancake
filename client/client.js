@@ -70,6 +70,41 @@ var YoutubeForm = React.createClass({
     }
 });
 
+var VolumeForm = React.createClass({
+    getInitialState: function () {
+        return {volume: ''};
+    },
+    handleUriChange: function (e) {
+        this.setState({volume: e.target.value});
+    },
+    handleSubmit: function (e) {
+        e.preventDefault();
+        console.log(e.target.value);
+        var volume = this.state.volume.trim();
+        if (!volume) {
+            return;
+        }
+        req = request.post('http://localhost:3456/vol/' + volume)
+            .end(function (err, res) {
+            }.bind(this));
+
+        console.log(volume);
+        //this.setState({volume: volume});
+    },
+    render: function () {
+        return (
+            <form className="volumeForm" onSubmit={this.handleSubmit}>
+                <input type="text"
+                       placeholder="80"
+                       value={this.state.volume}
+                       onChange={this.handleUriChange}
+                />
+                <input type="submit" value="Post"/>
+            </form>
+        );
+    }
+});
+
 var SoundBox = React.createClass({
     getInitialState: function () {
         return {data: []};
@@ -88,6 +123,7 @@ var SoundBox = React.createClass({
         return (
             <div className="soundBox">
                 <YoutubeForm />
+                <VolumeForm />
                 <SoundList data={this.state.data}/>
             </div>
         );
