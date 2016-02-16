@@ -146,7 +146,6 @@ function getTitle(youtubeId, callback) {
 // POST /youtube - grab a 'tube, strip the audio, add and play it.
 app.post('/youtube', function (req, res) {
     var youtubeId = req.body.uri;
-    if (! youtubeId )
     console.log(youtubeId);
     cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
 
@@ -188,6 +187,12 @@ app.get('/vol', function(req, res) {
     res.send();
 });
 
+app.post('/mute', function(req, res) {
+    // get state of mute
+    // change it
+
+})
+
 // Handle volume changes by percentage of total range.
 // If we need ramping(in case it gets louder too fast), we'll do so in the client.
 //
@@ -198,7 +203,8 @@ app.post('/vol/:percent', function(req, res) {
 
     // Some bounds checking.
     if (percentage > 100) {
-        percentage = 100;
+        res.send();
+        return;  // Turns out just bonking to 100 is a really bad idea.  :)
     }
     if (percentage < 0) {
         percentage = 0;
