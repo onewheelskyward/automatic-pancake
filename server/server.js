@@ -133,12 +133,12 @@ app.post('/upload', function (req, res) {
 // Grab the youtube title with minimal transformation based on discovery of what youtube-dl does to drop valid filenames.
 function getTitle(youtubeId, callback) {
     titleCmd = 'youtube-dl --get-title --get-id -- ' + youtubeId;
-    console.log("executing " + titleCmd);
+    console.log("getTitle executing " + titleCmd);
     exec(titleCmd, function(error, stdout, stderr) {
         outs = stdout.split(/\n/);
         title = outs[0].trim().replace(/:/g, ' -').replace(/"/g, "'").replace(/\//g, '_');
         id = outs[1];
-        console.log(["Title", title, "id", id]);
+        console.log(['title: ' + title, ' id: ' + id]);
         callback(title, id);
     });
 }
@@ -146,13 +146,11 @@ function getTitle(youtubeId, callback) {
 // POST /youtube - grab a 'tube, strip the audio, add and play it.
 app.post('/youtube', function (req, res) {
     var youtubeId = req.body.uri;
-    console.log(youtubeId);
+    console.log('Request received for: ' + youtubeId);
     cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
 
     getTitle(youtubeId, function(title, id) {
-        console.log("executing " + cmd);
-        console.log(title);
-        console.log(id);
+        console.log("Youtube Callback!  executing " + cmd);
         exec(cmd, function(error, stdout, stderr) {
             console.log(stdout);
             console.log(stderr);
