@@ -4,11 +4,30 @@ var ReactDOM = require('react-dom');
 var Dropzone = require('react-dropzone');
 var request = require('superagent');
 var baseUri = 'http://localhost:3456';
+var Slider = require('react-bootstrap-native-slider');
 
 ReactDOM.render(
     <h1>Pancake All The Things</h1>,
     document.getElementById('header')
 );
+
+var VolumeSlider = React.createClass({
+    changeValue: function () {
+        return true;
+    },
+    render: function () {
+       return (
+           <Slider
+               value={50}
+               handleChange={this.changeValue}
+               step={0.1}
+               max={100}
+               min={0} />
+       )
+   }
+});
+
+ReactDOM.render(<VolumeSlider />, document.getElementById('volumeslider'));
 
 var DropzoneDemo = React.createClass({
     onDrop: function (files) {
