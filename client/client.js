@@ -5,6 +5,24 @@ var Dropzone = require('react-dropzone');
 var request = require('superagent');
 var baseUri = 'http://localhost:3456';
 
+//var Slider = require('react-rangeslider');
+//
+//var Volume = React.createClass({
+//    render: function() {
+//        return (
+//            <Slider
+//                value={10}
+//                orientation="vertical"
+//                />
+//        );
+//    }
+//});
+//
+//ReactDOM.render(
+//    <Volume />,
+//    document.getElementById('volumeslider')
+//);
+
 ReactDOM.render(
     <h1>Pancake All The Things</h1>,
     document.getElementById('header')
@@ -165,8 +183,46 @@ var Sound = React.createClass({
 });
 
 ReactDOM.render(
-    <SoundBox url="http://localhost:3456/files" pollInterval={5000}/>,
+    <SoundBox url="http://localhost:3456/files" pollInterval={8000}/>,
     document.getElementById('sounds')
+);
+
+var VolumeDown = React.createClass({
+    render: function () {
+        return (
+            <div onClick={this.handleClick} className="volumedown">
+            Less Loud
+        </div>
+        );
+    },
+    handleClick: function (event) {
+        var req = request.post(baseUri + '/vol/down/');
+        req.end(); // 'callback' goes here.
+    }
+});
+
+ReactDOM.render(
+    <VolumeDown/>,
+    document.getElementById('volumedown')
+);
+
+var VolumeUp = React.createClass({
+    render: function () {
+        return (
+            <div onClick={this.handleClick} className="volumeup">
+            Louder
+        </div>
+        );
+    },
+    handleClick: function (event) {
+        var req = request.post(baseUri + '/vol/up/');
+        req.end(); // 'callback' goes here.
+    }
+});
+
+ReactDOM.render(
+    <VolumeUp/>,
+    document.getElementById('volumeup')
 );
 
 var Kill = React.createClass({
