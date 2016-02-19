@@ -143,6 +143,14 @@ function getTitle(youtubeId, callback) {
     });
 }
 
+function setVol(vol, callback) {
+    var cmd = 'amixer set PCM -- ' + vol;
+    console.log(cmd);
+    exec(cmd, function(error, stdout, stderr) {
+        callback();
+    });
+}
+
 // POST /youtube - grab a 'tube, strip the audio, add and play it.
 app.post('/youtube', function (req, res) {
     var youtubeId = req.body.uri;
@@ -210,12 +218,10 @@ app.get('/vol/up', function(req, res) {
                 var result = regex.exec(str);
                 vol = parseInt(result[1]);
                 vol += 200;
-                var cmd = 'amixer set PCM -- ' + vol;
-                console.log(cmd);
-                exec(cmd, function(error, stdout, stderr) {
+                setVol(vol, function(res) {
                     res.send({
                         dB: (vol / 100).toFixed(2)
-                    });
+                    })
                 });
             }
         })
@@ -224,6 +230,23 @@ app.get('/vol/up', function(req, res) {
 });
 
 app.get('/vol/down', function(req, res) {
+    var cmd = 'amixer';
+    //Playback -2406 [74%] [-24.06dB] [on]
+    exec(cmd, function(error, stdout, stderr) {
+        stdout.split(/\n/).forEach(function(str) {
+            if (str.indexOf('dB') > -1) {
+                var regex = /Playback ([-0-9]+)/;
+                var result = regex.exec(str);
+                vol = parseInt(result[1]);
+                vol -= 200;
+                setVol(vol, function(res) {
+                    res.send({
+                        dB: (vol / 100).toFixed(2)
+                    })
+                });
+            }
+        })
+    });
     res.send();
 });
 
