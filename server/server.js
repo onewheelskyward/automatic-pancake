@@ -206,18 +206,17 @@ app.get('/vol/up', function(req, res) {
     exec(cmd, function(error, stdout, stderr) {
         stdout.split(/\n/).forEach(function(str) {
             if (str.indexOf('dB') > -1) {
-		var regex = /([-0-9.]+)dB/;
-		var result = regex.exec(str);
-		var otherRegex = /Playback ([-0-9]+)/;
-		var newResult = otherRegex.exec(str)
-		vol = parseInt(newResult[1]);
-		vol += 200;
+                var regex = /Playback ([-0-9]+)/;
+                var result = regex.exec(str);
+                vol = parseInt(result[1]);
+                vol += 200;
                 var cmd = 'amixer set PCM -- ' + vol;
-		console.log(cmd);	
-                exec(cmd, function(error, stdout, stderr) {});
-//                res.send({
-//                  dB: (vol / 100).toFixed(2)
-//                });
+                console.log(cmd);
+                exec(cmd, function(error, stdout, stderr) {
+                    res.send({
+                        dB: (vol / 100).toFixed(2)
+                    });
+                });
             }
         })
     });
