@@ -216,10 +216,10 @@ app.post('/vol/up', function(req, res) {
             if (str.indexOf('dB') > -1) {
                 var regex = /Playback ([-0-9]+)/;
                 var result = regex.exec(str);
-		console.log("Volume: " + result[1]);
+                console.log("Volume: " + result[1]);
                 vol = parseInt(result[1]);
-		console.log("Volume: " + vol);
-                vol += 200;
+                console.log("Volume: " + vol);
+                vol += 100;
                 var cmd = 'amixer set PCM -- ' + vol;
                 console.log(cmd);
                 exec(cmd, function(error, stdout, stderr) {});
@@ -238,7 +238,7 @@ app.post('/vol/down', function(req, res) {
                 var regex = /Playback ([-0-9]+)/;
                 var result = regex.exec(str);
                 vol = parseInt(result[1]);
-                vol -= 200;
+                vol -= 100;
                 var cmd = 'amixer set PCM -- ' + vol;
                 console.log(cmd);
                 exec(cmd, function(error, stdout, stderr) {});
