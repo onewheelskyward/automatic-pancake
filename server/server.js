@@ -81,7 +81,7 @@ app.get('/', function (req, res) {
 
 // GET /files - return json listing of files, names and ids used to display the frontend.
 app.get('/files', function (req, res) {
-    r.db(database).table(tables.files).orderBy('file').run(connection, function(err, cursor) {
+    r.db(database).table(tables.files).orderBy(r.desc('created')).run(connection, function(err, cursor) {
         if (err) throw err;
         cursor.toArray(function(err, result) {
             res.send(result);
@@ -137,7 +137,11 @@ function getTitle(youtubeId, callback) {
     console.log("getTitle executing " + titleCmd);
     exec(titleCmd, function(error, stdout, stderr) {
         outs = stdout.split(/\n/);
-        title = outs[0].trim().replace(/:/g, ' -').replace(/"/g, "'").replace(/\//g, '_');
+        title = outs[0].trim()
+            .replace(/:/g, ' -')
+            .replace(/"/g, "'")
+            .replace(/\//g, '_')
+            .replace(/\*+/g, '_');
         id = outs[1];
         console.log(['title: ' + title, ' id: ' + id]);
         callback(title, id);
