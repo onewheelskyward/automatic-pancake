@@ -147,6 +147,10 @@ function getTitle(youtubeId, callback) {
 app.post('/youtube', function (req, res) {
     var youtubeId = req.body.uri;
     console.log('Request received for: ' + youtubeId);
+
+    res.send();  // Client exit point, we have what we need, and if we hang onto it chrome keeps re-making the request.
+                 // Consider throwing a 404 here if the id isn't found.
+
     cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
 
     getTitle(youtubeId, function(title, id) {
@@ -175,6 +179,17 @@ app.post('/delall', function(req, res) {
     res.send();
 });
 
+// POST to this magic, mutable migration.
+app.post('/magicfix', function(req, res) {
+    r.db(database).table(tables.files).run(connection, function(err, cursor) {
+        if (err) throw err;
+        cursor.toArray(function(err, result) {
+            res.send(result);
+        });
+    });
+    res.send();
+});
+
 // DELETE /u-u-i-d - remove one file
 app.delete('/:id', function(req, res) {
     r.db(database).table(tables.files).get(req.params.id).delete().run(connection);
@@ -185,11 +200,30 @@ app.get('/vol', function(req, res) {
     res.send();
 });
 
+app.get('/vol/up', function(req, res) {
+    var cmd = 'amixer';
+    //Playback -2406 [74%] [-24.06dB] [on]
+    exec(cmd, function(error, stdout, stderr) {
+        stdout.split(/\n/).forEach(function(str) {
+            console.log(str);
+        })
+    });
+    res.send({
+        volume: percentage + "%",
+        dB: (dB / 100).toFixed(2)
+    });
+    res.send();
+});
+
+app.get('/vol/down', function(req, res) {
+    res.send();
+});
+
 app.post('/mute', function(req, res) {
     // get state of mute
     // change it
 
-})
+});
 
 // Handle volume changes by percentage of total range.
 // If we need ramping(in case it gets louder too fast), we'll do so in the client.
