@@ -218,11 +218,9 @@ app.get('/vol/up', function(req, res) {
                 var result = regex.exec(str);
                 vol = parseInt(result[1]);
                 vol += 200;
-                setVol(vol, function(res) {
-                    res.send({
-                        dB: (vol / 100).toFixed(2)
-                    })
-                });
+                var cmd = 'amixer set PCM -- ' + vol;
+                console.log(cmd);
+                exec(cmd, function(error, stdout, stderr) {});
             }
         })
     });
@@ -239,17 +237,57 @@ app.get('/vol/down', function(req, res) {
                 var result = regex.exec(str);
                 vol = parseInt(result[1]);
                 vol -= 200;
-                setVol(vol, function(res) {
-                    res.send({
-                        dB: (vol / 100).toFixed(2)
-                    })
-                });
+                var cmd = 'amixer set PCM -- ' + vol;
+                console.log(cmd);
+                exec(cmd, function(error, stdout, stderr) {});
             }
         })
     });
     res.send();
 });
 
+//app.get('/vol/up', function(req, res) {
+//    var cmd = 'amixer';
+//    //Playback -2406 [74%] [-24.06dB] [on]
+//    exec(cmd, function(error, stdout, stderr) {
+//        stdout.split(/\n/).forEach(function(str) {
+//            if (str.indexOf('dB') > -1) {
+//                var regex = /Playback ([-0-9]+)/;
+//                var result = regex.exec(str);
+//                vol = parseInt(result[1]);
+//                vol += 200;
+//                setVol(vol, function(res) {
+//                    res.send({
+//                        dB: (vol / 100).toFixed(2)
+//                    })
+//                });
+//            }
+//        })
+//    });
+//    res.send();
+//});
+//
+//app.get('/vol/down', function(req, res) {
+//    var cmd = 'amixer';
+//    //Playback -2406 [74%] [-24.06dB] [on]
+//    exec(cmd, function(error, stdout, stderr) {
+//        stdout.split(/\n/).forEach(function(str) {
+//            if (str.indexOf('dB') > -1) {
+//                var regex = /Playback ([-0-9]+)/;
+//                var result = regex.exec(str);
+//                vol = parseInt(result[1]);
+//                vol -= 200;
+//                setVol(vol, function(res) {
+//                    res.send({
+//                        dB: (vol / 100).toFixed(2)
+//                    })
+//                });
+//            }
+//        })
+//    });
+//    res.send();
+//});
+//
 app.post('/mute', function(req, res) {
     // get state of mute
     // change it
