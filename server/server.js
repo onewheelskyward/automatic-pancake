@@ -208,7 +208,7 @@ app.get('/vol', function(req, res) {
     res.send();
 });
 
-app.get('/vol/up', function(req, res) {
+app.post('/vol/up', function(req, res) {
     var cmd = 'amixer';
     //Playback -2406 [74%] [-24.06dB] [on]
     exec(cmd, function(error, stdout, stderr) {
@@ -216,7 +216,9 @@ app.get('/vol/up', function(req, res) {
             if (str.indexOf('dB') > -1) {
                 var regex = /Playback ([-0-9]+)/;
                 var result = regex.exec(str);
+		console.log("Volume: " + result[1]);
                 vol = parseInt(result[1]);
+		console.log("Volume: " + vol);
                 vol += 200;
                 var cmd = 'amixer set PCM -- ' + vol;
                 console.log(cmd);
@@ -227,7 +229,7 @@ app.get('/vol/up', function(req, res) {
     res.send();
 });
 
-app.get('/vol/down', function(req, res) {
+app.post('/vol/down', function(req, res) {
     var cmd = 'amixer';
     //Playback -2406 [74%] [-24.06dB] [on]
     exec(cmd, function(error, stdout, stderr) {
@@ -299,7 +301,7 @@ app.post('/mute', function(req, res) {
 //
 // amixer set PCM -- -9999  # off, -99.99dB
 // amixer set PCM -- 400    # full, +4.00dB
-app.post('/vol/:percent', function(req, res) {
+app.post('/vol/:percent(\\d+)', function(req, res) {
     var percentage = req.params.percent;
 
     // Some bounds checking.
