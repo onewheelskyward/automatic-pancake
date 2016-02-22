@@ -66,3 +66,9 @@ amixer cset numid=3 1
 Mplayer config options example
 
 http://ubuntuforums.org/archive/index.php/t-77329.html
+
+Cropping!
+
+``-ss <time>: Seek to given time position``
+
+``-endpos <[[hh:]mm:]ss[.ms]|size[b|kb|mb]>: Stop at given time or byte position``
