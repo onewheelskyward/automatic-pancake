@@ -194,16 +194,16 @@ app.post('/delall', function(req, res) {
 
 // POST to this magic, mutable migration.
 app.post('/magicfix', function(req, res) {
-    r.db(database).table(tables.files).update({version: 1}).run(connection);
-    //r.db(database).table(tables.files).run(connection, function(err, cursor) {
-    //    if (err) throw err;
-    //    cursor.toArray(function(err, result) {
-    //        result.forEach(function (item) {
-    //            r.db(database).table(tables.files).
-    //        });
-    //        res.send(result);
-        //});
-    //});
+    //r.db(database).table(tables.files).update({version: 1}).run(connection);
+    r.db(database).table(tables.files).run(connection, function(err, cursor) {
+        if (err) throw err;
+        cursor.toArray(function(err, result) {
+            result.forEach(function (item) {
+                r.db(database).table(tables.files).
+            });
+            res.send(result);
+        });
+    });
     res.send();
 });
 
