@@ -3,18 +3,42 @@
 Installing
 ==========
 
+Pre-requisite packages:
+mplayer
+rethinkdb
+espeak (Linux-only)
+
+Mac:
+
 ``brew install mplayer rethinkdb``
+
+Linux
+
+apt-get install espeak rethinkdb mplayer
+
+
+Node Setup
+==========
+
+I recommend nodenv for managing your versions.
+
+``apt-get install nodenv ; nodenv install -v 5.6.1``
+
+``brew install nodenv ; nodenv install -v 5.6.1``
 
 DB Setup
 ========
+
 Log into http://localhost:8080 and create the database and the ``files`` and ``tracking`` tables within it.
 
 Client Build
 ============
+
 ``browserify -t [ babelify --presets [ react ] ] client/client.js -o client/bundle.js``
 
 Server Run
 ==========
+
 ``node server/server.js``
 
 TODO
@@ -23,7 +47,6 @@ TODO
 - deletes
 - runtimes
 - user auth
-- :strike:`rethink!`
 - appliancing
 - cloud polling
 - jukebox mode
@@ -40,8 +63,6 @@ via http://weworkweplay.com/play/raspberry-pi-nodejs/, current node is 4.2.1
 ``wget http://node-arm.herokuapp.com/node_latest_armhf.deb``
 
 ``dpkg -i node_latest_armhf.deb``
-
-Enable audio to audio jack instead of HDMI
 
 https://www.raspberrypi.org/documentation/configuration/audio-config.md
 
