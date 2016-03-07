@@ -193,6 +193,9 @@ app.post('/delall', function(req, res) {
 });
 
 // POST to this magic, mutable migration.
+// extract name + make view use the new name
+// Get timing information from the files
+// unbreak that command down there.
 app.post('/magicfix', function(req, res) {
     //r.db(database).table(tables.files).update({version: 1}).run(connection);
     r.db(database).table(tables.files).run(connection, function(err, cursor) {
