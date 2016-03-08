@@ -202,7 +202,7 @@ app.post('/magicfix', function(req, res) {
         if (err) throw err;
         cursor.toArray(function(err, result) {
             result.forEach(function (item) {
-                r.db(database).table(tables.files).get(item.id).run(connection function(err, cursor) {
+                r.db(database).table(tables.files).get(item.id).run(connection, function(err, cursor) {
 
                 });
             });
