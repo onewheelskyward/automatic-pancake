@@ -155,7 +155,7 @@ var SoundList = React.createClass({
     render: function () {
         var soundNodes = this.props.data.map(function (sound) {
             return (
-                <Sound filename={sound.file} name={sound.name} id={sound.id} key={sound.id}>
+                    <Sound filename={sound.file} name={sound.name} type={sound.type} id={sound.id} key={sound.id}>
                     {sound.created}
                 </Sound>
             );
@@ -171,7 +171,7 @@ var SoundList = React.createClass({
 var Sound = React.createClass({
     render: function () {
         return (
-            <div onClick={this.handleClick} className="sound">
+            <div onClick={this.handleClick} className={this.props.type}>
                 {this.props.name}
             </div>
         );
