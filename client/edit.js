@@ -54,12 +54,11 @@ var SoundList = React.createClass({
 var Sound = React.createClass({
     render: function () {
         return (
-            <div onClick={this.handleClick} className="sound">
-                {this.props.filename}
-            </div>
+            <textarea onChange={this.handleChange} className="sound" value={this.props}>
+            </textarea>
         );
     },
-    handleClick: function (event) {
+    handleChange: function (event) {
         var req = request.post(baseUri + '/play/' + this.props.id);
         req.end(); // 'callback' goes here.
     }
