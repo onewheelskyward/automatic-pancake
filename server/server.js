@@ -43,6 +43,11 @@ var tables = {files: 'files', tracking: 'tracking'};
 //    });
 //}
 
+function piSetup() {
+    // One day, let's run this upon launch to fix the pi settings.
+    var fixxer = "amixer cset numid=3 1";  // Set output to 3.5mm.
+}
+
 function logDbCall(result) {
     console.log(JSON.stringify(result, null, 2));
 }
