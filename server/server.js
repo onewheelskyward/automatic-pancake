@@ -164,7 +164,10 @@ app.post('/youtube', function (req, res) {
     res.send();  // Client exit point, we have what we need, and if we hang onto it chrome keeps re-making the request.
                  // Consider throwing a 404 here if the id isn't found.
 
-    cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
+    // Audio only
+    //cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
+    // Viddy-A
+    cmd = "youtube-dl -w --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
 
     getTitle(youtubeId, function(title, id) {
         console.log("Youtube Callback!  executing " + cmd);
