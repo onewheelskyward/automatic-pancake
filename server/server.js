@@ -80,6 +80,10 @@ var track = function (req, id) {
     r.db(database).table('tracking').insert([{ipAddress: getIp(req), fileId: id}]).run(connection);
 };
 
+var say = function (speech) {
+    // Add console.exec here.
+};
+
 app.get('/', function (req, res) {
     res.send('pancakes');
 });
@@ -109,6 +113,15 @@ app.post('/play/:id', function (req, res) {
     // Check that filename exists in db.
     track(req, req.params.id);
     play(req.params.id);
+    res.send();
+});
+
+// POST /say - Make it so.
+app.post('/say', function (req, res) {
+    console.log('saying ' + req.body.speech);
+    // Check that filename exists in db.
+    track(req, req.body.speech);
+    say(req.body.speech);
     res.send();
 });
 
