@@ -82,7 +82,11 @@ var track = function (req, id) {
 
 var say = function (speech) {
     // Add console.exec here.
-};
+    // and, you know, like, escape it.
+    // Perhaps by dumping to a file
+    exec("say ${speech}", function(error, stdout, stderr) {
+        //Yeah
+    };
 
 app.get('/', function (req, res) {
     res.send('pancakes');
