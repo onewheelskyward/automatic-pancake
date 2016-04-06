@@ -9,7 +9,7 @@ var exec = require('child_process').exec;
 var app = express();
 var r = require('rethinkdb');
 var bodyParser = require('body-parser');
-var player = require('play-sound')(opts = {player: 'mplayer'});
+var player = require('play-sound')(opts = {player: 'play'});
 
 app.set('port', 3456);
 app.use(busboy());
@@ -205,7 +205,7 @@ app.post('/youtube', function (req, res) {
 // POST /kill - MAKE IT STOP
 app.post('/kill', function (req, res) {
     track(req, 'KILL');
-    exec('killall mplayer', function (error, stdout, stderr) {
+    exec('killall play', function (error, stdout, stderr) {
         console.log(stdout);
     });
     res.send();
