@@ -84,9 +84,10 @@ var say = function (speech) {
     // Add console.exec here.
     // and, you know, like, escape it.
     // Perhaps by dumping to a file
-    exec("say ${speech}", function(error, stdout, stderr) {
+    exec("say ${speech}", function (error, stdout, stderr) {
         //Yeah
-    };
+    });
+};
 
 app.get('/', function (req, res) {
     res.send('pancakes');
@@ -118,6 +119,26 @@ app.post('/play/:id', function (req, res) {
     track(req, req.params.id);
     play(req.params.id);
     res.send();
+});
+
+// POST /search/fart - return farts.
+app.post('/search', function (req, res) {
+    console.log(req.body);
+    console.log('Searching for ' + req.body.query);
+    if (req.body.query == undefined) {
+        console.log('Undefined search query');
+        res.sendStatus(400);
+    } else {
+        r.db(database).table(tables.files).filter(function(doc) {
+            console.log('Query match' + doc('file').match(req.body.query));
+            return doc('file').match(req.body.query)
+        }).run(connection, function(err, cursor) {
+            if (err) throw err;
+            cursor.toArray(function(err, result) {
+                res.send(result);
+            });
+        });
+    }
 });
 
 // POST /say - Make it so.
