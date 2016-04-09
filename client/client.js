@@ -3,7 +3,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Dropzone = require('react-dropzone');
 var request = require('superagent');
-var baseUri = 'http://localhost:3456';
+var config = require('./config.json');
 
 //var Slider = require('react-rangeslider');
 //
@@ -66,7 +66,7 @@ var YoutubeForm = React.createClass({
             return;
         }
         // TODO: send request to the server
-        req = request.post('http://localhost:3456/youtube')
+        req = request.post(config.host + '/youtube')
             .send({uri: uri})
             .end(function (err, res) {
             }.bind(this));
@@ -102,7 +102,7 @@ var VolumeForm = React.createClass({
         if (!volume) {
             return;
         }
-        req = request.post('http://localhost:3456/vol/' + volume)
+        req = request.post(config.host + '/vol/' + volume)
             .end(function (err, res) {
             }.bind(this));
 
@@ -183,7 +183,7 @@ var Sound = React.createClass({
 });
 
 ReactDOM.render(
-    <SoundBox url="http://localhost:3456/files" pollInterval={8000}/>,
+    <SoundBox url={config.host + '/files'} pollInterval={8000}/>,
     document.getElementById('sounds')
 );
 
@@ -196,7 +196,7 @@ var VolumeDown = React.createClass({
         );
     },
     handleClick: function (event) {
-        var req = request.post(baseUri + '/vol/down/');
+        var req = request.post(config.host + '/vol/down/');
         req.end(); // 'callback' goes here.
     }
 });
@@ -234,7 +234,7 @@ var Kill = React.createClass({
         );
     },
     handleClick: function (event) {
-        var req = request.post(baseUri + '/kill')
+        var req = request.post(config.host + '/kill')
             .send();
         req.end(); // 'callback' goes here.
     }
