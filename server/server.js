@@ -131,7 +131,7 @@ app.post('/search', function (req, res) {
     } else {
         r.db(database).table(tables.files).filter(function(doc) {
             console.log('Query match' + doc('file').match(req.body.query));
-            return doc('file').match(req.body.query)
+            return doc('name').match(req.body.query)
         }).run(connection, function(err, cursor) {
             if (err) throw err;
             cursor.toArray(function(err, result) {
