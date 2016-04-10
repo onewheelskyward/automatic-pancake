@@ -7,7 +7,7 @@ var express = require('express');
 var busboy = require('connect-busboy');
 var exec = require('child_process').exec;
 var app = express();
-var r = require('rethinkdb');
+var r = require('rethinkdbdash')();
 var bodyParser = require('body-parser');
 var player = require('play-sound')(opts = {player: 'play'});
 

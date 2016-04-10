@@ -18,7 +18,7 @@
     "react-dom": "^0.14.3",
     "react-dropzone": "^3.3.0",
     "react-sound": "^0.3.0",
-    "rethinkdb": "^2.2.1",
+    "rethinkdbdash": "^2.2.18",
     "soundmanager2": "^2.97.20150601",
     "superagent": "^1.6.1"
   },
