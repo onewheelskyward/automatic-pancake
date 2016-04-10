@@ -95,20 +95,14 @@ app.get('/', function (req, res) {
 
 // GET /files - return json listing of files, names and ids used to display the frontend.
 app.get('/files', function (req, res) {
-    r.db(database).table(tables.files).orderBy(r.desc('created')).run(connection, function(err, cursor) {
-        if (err) throw err;
-        cursor.toArray(function(err, result) {
-            res.send(result);
-        });
+    r.db(database).table(tables.files).orderBy(r.desc('created')).run().then(function(result) {
+        res.send(result);
     });
 });
 
 app.get('/tracking', function (req, res) {
-    r.db(database).table(tables.tracking).run(connection, function(err, cursor) {
-        if (err) throw err;
-        cursor.toArray(function(err, result) {
-            res.send(result);
-        });
+    r.db(database).table(tables.tracking).run().then(function(result) {
+        res.send(result);
     });
 });
 
@@ -132,11 +126,8 @@ app.post('/search', function (req, res) {
         r.db(database).table(tables.files).filter(function(doc) {
             console.log('Query match' + doc('file').match(req.body.query));
             return doc('name').match(req.body.query)
-        }).run(connection, function(err, cursor) {
-            if (err) throw err;
-            cursor.toArray(function(err, result) {
-                res.send(result);
-            });
+        }).run().then(function(result) {
+            res.send(result);
         });
     }
 });
@@ -153,8 +144,7 @@ app.post('/say', function (req, res) {
 // Add the file to rethink and autoplay.
 function addFile(fieldname, name, type) {
     console.log("Adding file " + fieldname);
-    r.db(database).table(tables.files).insert([{ file: fieldname, name: name, type: type, created: new Date()}]).run(connection, function(err, result) {
-        if (err) throw err;
+    r.db(database).table(tables.files).insert([{ file: fieldname, name: name, type: type, created: new Date()}]).run().then(function(result) {
         logDbCall(result);
         play(result.generated_keys[0]);
     });
@@ -233,10 +223,10 @@ app.post('/kill', function (req, res) {
 });
 
 // POST delall - big ol' reset button.
-app.post('/delall', function(req, res) {
-    r.db(database).table(tables.files).delete().run(connection);
-    res.send();
-});
+// app.post('/delall', function(req, res) {
+//     r.db(database).table(tables.files).delete().run();
+//     res.send();
+// });
 
 // POST to this magic, mutable migration.
 // extract name + make view use the new name
@@ -244,10 +234,8 @@ app.post('/delall', function(req, res) {
 // unbreak that command down there.
 app.post('/magicfix', function(req, res) {
     //r.db(database).table(tables.files).update({version: 1}).run(connection);
-    r.db(database).table(tables.files).run(connection, function(err, cursor) {
-        if (err) throw err;
-        cursor.toArray(function(err, result) {
-            result.forEach(function (item) {
+    r.db(database).table(tables.files).run().then(function(result) {
+        result.forEach(function (item) {
 		// This grabbed untyped things and typed them.
 //		if (item.type == null) {
 //		    console.log(item);
@@ -256,7 +244,7 @@ app.post('/magicfix', function(req, res) {
 //		}
 
 		// This set v2.
-                console.log(item);
+            console.log(item);
 
 		// Update to v2
 //                r.db(database).table(tables.files).get(item.id).update({version: 2}).run(connection, function(err, cursor) {});
@@ -279,16 +267,15 @@ app.post('/magicfix', function(req, res) {
 //			r.db(database).table(tables.files).get(item.id).update({name: matches[1]}).run(connection, function(err, cursor) {});
 //		    }
 //		}
-            });
-//            res.send(result);
         });
+//            res.send(result);
     });
     res.send();
 });
 
 // DELETE /u-u-i-d - remove one file
 app.delete('/:id', function(req, res) {
-    r.db(database).table(tables.files).get(req.params.id).delete().run(connection);
+    r.db(database).table(tables.files).get(req.params.id).delete().run();
     res.send();
 });
 
