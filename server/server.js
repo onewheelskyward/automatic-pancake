@@ -20,6 +20,14 @@ function logDbCall(result) {
 //tableCreate(tables.files);
 //tableCreate(tables.tracking);
 
+//function tableCreate(tableName) {
+//    r.db(database).tableCreate(tableName).run(connection, function(err, result) {
+//        if (err) throw err;
+//        logDbCall(result);
+//    });
+//}
+
+
 app.set('port', 3456);
 app.use(busboy());
 
@@ -37,27 +45,12 @@ var addFile = require('./addFile')(app, config, r)
 var search = require('./search')(app, config, r)
 var track = require('./track')(app, config, r)
 var play = require('./play')(app, config, r)
-
-//function tableCreate(tableName) {
-//    r.db(database).tableCreate(tableName).run(connection, function(err, result) {
-//        if (err) throw err;
-//        logDbCall(result);
-//    });
-//}
+var say = require('./say')(app, config, r)
 
 function piSetup() {
     // One day, let's run this upon launch to fix the pi settings.
     var fixxer = "amixer cset numid=3 1";  // Set output to 3.5mm.
 }
-
-var say = function (speech) {
-    // Add console.exec here.
-    // and, you know, like, escape it.
-    // Perhaps by dumping to a file
-    exec("say ${speech}", function (error, stdout, stderr) {
-        //Yeah
-    });
-};
 
 app.get('/', function (req, res) {
     res.send('pancakes');
@@ -74,15 +67,6 @@ app.get('/tracking', function (req, res) {
     r.db(database).table(tables.tracking).run().then(function(result) {
         res.send(result);
     });
-});
-
-// POST /say - Make it so.
-app.post('/say', function (req, res) {
-    console.log('saying ' + req.body.speech);
-    // Check that filename exists in db.
-    track(req, req.body.speech);
-    say(req.body.speech);
-    res.send();
 });
 
 // Grab the youtube title with minimal transformation based on discovery of what youtube-dl does to drop valid filenames.
