@@ -7,3 +7,4 @@ client/bundle.js
 .DS_Store
 rethinkdb_data
 client/config.json
+server/config.json

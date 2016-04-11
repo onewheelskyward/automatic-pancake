@@ -1,0 +1,5 @@
+{
+  "database": "automaticpancake",
+  "dbHost": "localhost",
+  "dbPort": 28015
+}

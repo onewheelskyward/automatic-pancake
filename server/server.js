@@ -1,15 +1,24 @@
 /*
  Automatic Pancake
  */
-var fs = require('fs');
-//var path = require('path');
 var express = require('express');
 var busboy = require('connect-busboy');
 var exec = require('child_process').exec;
 var app = express();
-var r = require('rethinkdbdash')();
 var bodyParser = require('body-parser');
-var player = require('play-sound')(opts = {player: 'play'});
+var config = require('./config.json');
+
+var r = require('rethinkdbdash')(
+    {host: config.dbHost, port: config.dbPort, database: config.database}
+);
+
+function logDbCall(result) {
+    console.log(JSON.stringify(result, null, 2));
+}
+
+// This...didn't really work.
+//tableCreate(tables.files);
+//tableCreate(tables.tracking);
 
 app.set('port', 3456);
 app.use(busboy());
@@ -24,17 +33,10 @@ app.use(function (req, res, next) {
     next();
 });
 
-// Initialize the rethink connection.
-var connection = null;
-
-r.connect({host: 'localhost', port: 28015, database: 'automaticpancake'}, function (err, conn) {
-    if (err) throw err;
-    connection = conn;
-});
-
-// Database configuration
-var database = 'automaticpancake';
-var tables = {files: 'files', tracking: 'tracking'};
+var addFile = require('./addFile')(app, config, r)
+var search = require('./search')(app, config, r)
+var track = require('./track')(app, config, r)
+var play = require('./play')(app, config, r)
 
 //function tableCreate(tableName) {
 //    r.db(database).tableCreate(tableName).run(connection, function(err, result) {
@@ -47,38 +49,6 @@ function piSetup() {
     // One day, let's run this upon launch to fix the pi settings.
     var fixxer = "amixer cset numid=3 1";  // Set output to 3.5mm.
 }
-
-function logDbCall(result) {
-    console.log(JSON.stringify(result, null, 2));
-}
-
-// This...didn't really work.
-//tableCreate(tables.files);
-//tableCreate(tables.tracking);
-
-var play = function (id) {
-    var fullpath = __dirname + '/files/';
-    r.db(database).table(tables.files).get(id).run(connection, function(err, result) {
-        //filter(r.row('id').eq(id))
-        fullpath += result.file;
-        console.log("Playing " + fullpath);
-
-        player.play(fullpath, function (err) {
-            // Nulls show up a lot.  ¯\_(ツ)_/¯
-            if (err) {
-                console.log('Play error ' + err);
-            }
-        });
-    });
-};
-
-var getIp = function (req) {
-    return req.headers['x-forwarded-for'] || req.connection.remoteAddress
-};
-
-var track = function (req, id) {
-    r.db(database).table('tracking').insert([{ipAddress: getIp(req), fileId: id}]).run(connection);
-};
 
 var say = function (speech) {
     // Add console.exec here.
@@ -95,7 +65,7 @@ app.get('/', function (req, res) {
 
 // GET /files - return json listing of files, names and ids used to display the frontend.
 app.get('/files', function (req, res) {
-    r.db(database).table(tables.files).orderBy(r.desc('created')).run().then(function(result) {
+    r.db(config.database).table('files').orderBy(r.desc('created')).run().then(function(result) {
         res.send(result);
     });
 });
@@ -106,61 +76,12 @@ app.get('/tracking', function (req, res) {
     });
 });
 
-// POST /play/u-u-i-d - Make it so.
-app.post('/play/:id', function (req, res) {
-    console.log('Playing ' + req.params.id);
-    // Check that filename exists in db.
-    track(req, req.params.id);
-    play(req.params.id);
-    res.send();
-});
-
-// POST /search/fart - return farts.
-app.post('/search', function (req, res) {
-    console.log(req.body);
-    console.log('Searching for ' + req.body.query);
-    if (req.body.query == undefined) {
-        console.log('Undefined search query');
-        res.sendStatus(400);
-    } else {
-        r.db(database).table(tables.files).filter(function(doc) {
-            console.log('Query match' + doc('file').match(req.body.query));
-            return doc('name').match(req.body.query)
-        }).run().then(function(result) {
-            res.send(result);
-        });
-    }
-});
-
 // POST /say - Make it so.
 app.post('/say', function (req, res) {
     console.log('saying ' + req.body.speech);
     // Check that filename exists in db.
     track(req, req.body.speech);
     say(req.body.speech);
-    res.send();
-});
-
-// Add the file to rethink and autoplay.
-function addFile(fieldname, name, type) {
-    console.log("Adding file " + fieldname);
-    r.db(database).table(tables.files).insert([{ file: fieldname, name: name, type: type, created: new Date()}]).run().then(function(result) {
-        logDbCall(result);
-        play(result.generated_keys[0]);
-    });
-}
-
-// POST /upload - Drop a file, add and play it.
-app.post('/upload', function (req, res) {
-    var fstream;
-    req.pipe(req.busboy);
-    req.busboy.on('file', function (fieldname, file) {
-        console.log("Uploading: " + fieldname);
-        fstream = fs.createWriteStream(__dirname + '/files/' + fieldname);
-        file.pipe(fstream);
-        filenameArr = fieldname.split(/\./);
-        addFile(fieldname, filenameArr[0], 'fx')
-    });
     res.send();
 });
 
