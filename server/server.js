@@ -12,10 +12,6 @@ var r = require('rethinkdbdash')(
     {host: config.dbHost, port: config.dbPort, database: config.database}
 );
 
-function logDbCall(result) {
-    console.log(JSON.stringify(result, null, 2));
-}
-
 // This...didn't really work.
 //tableCreate(tables.files);
 //tableCreate(tables.tracking);
@@ -41,12 +37,13 @@ app.use(function (req, res, next) {
     next();
 });
 
-var addFile = require('./addFile')(app, config, r)
+var youtube = require('./youtube')(app, config, r)
+var addFile = require('./upload')(app, config, r)
 var search = require('./search')(app, config, r)
 var track = require('./track')(app, config, r)
 var play = require('./play')(app, config, r)
-var say = require('./say')(app, config, r)
 var file = require('./file')(app, config, r)
+var say = require('./say')(app, config, r)
 
 function piSetup() {
     // One day, let's run this upon launch to fix the pi settings.
@@ -60,55 +57,6 @@ app.get('/', function (req, res) {
 app.get('/tracking', function (req, res) {
     r.db(database).table(tables.tracking).run().then(function(result) {
         res.send(result);
-    });
-});
-
-// Grab the youtube title with minimal transformation based on discovery of what youtube-dl does to drop valid filenames.
-function getTitle(youtubeId, callback) {
-    titleCmd = 'youtube-dl --get-title --get-id -- ' + youtubeId;
-    console.log("getTitle executing " + titleCmd);
-    exec(titleCmd, function(error, stdout, stderr) {
-        outs = stdout.split(/\n/);
-        title = outs[0].trim()
-            .replace(/:/g, ' -')
-            .replace(/"/g, "'")
-            .replace(/\//g, '_')
-            .replace(/\*+/g, '_');
-        id = outs[1];
-        console.log(['title: ' + title, ' id: ' + id]);
-        callback(title, id);
-    });
-}
-
-function setVol(vol, callback) {
-    var cmd = 'amixer set PCM -- ' + vol;
-    console.log(cmd);
-    exec(cmd, function(error, stdout, stderr) {
-        callback();
-    });
-}
-
-// POST /youtube - grab a 'tube, strip the audio, add and play it.
-app.post('/youtube', function (req, res) {
-    var youtubeId = req.body.uri;
-    console.log('Request received for: ' + youtubeId);
-
-    res.send();  // Client exit point, we have what we need, and if we hang onto it chrome keeps re-making the request.
-                 // Consider throwing a 404 here if the id isn't found.
-
-    // Audio only
-    //cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
-    // Viddy-A
-    cmd = "youtube-dl -w --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
-
-    getTitle(youtubeId, function(title, id) {
-        console.log("Youtube Callback!  executing " + cmd);
-        exec(cmd, function(error, stdout, stderr) {
-            console.log(stdout);
-            console.log(stderr);
-            addFile(title + '.' + id + '.mp3', title, 'youtube');
-            res.send();
-        })
     });
 });
 
