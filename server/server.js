@@ -46,6 +46,7 @@ var search = require('./search')(app, config, r)
 var track = require('./track')(app, config, r)
 var play = require('./play')(app, config, r)
 var say = require('./say')(app, config, r)
+var file = require('./file')(app, config, r)
 
 function piSetup() {
     // One day, let's run this upon launch to fix the pi settings.
@@ -54,13 +55,6 @@ function piSetup() {
 
 app.get('/', function (req, res) {
     res.send('pancakes');
-});
-
-// GET /files - return json listing of files, names and ids used to display the frontend.
-app.get('/files', function (req, res) {
-    r.db(config.database).table('files').orderBy(r.desc('created')).run().then(function(result) {
-        res.send(result);
-    });
 });
 
 app.get('/tracking', function (req, res) {
