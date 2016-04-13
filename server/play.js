@@ -1,7 +1,19 @@
 var player = require('play-sound')(opts = {player: 'play'});
 
 module.exports = function(app, config, r) {
-    require ('./trackCommon')(app, config, r);
+    var getIp = function (req) {
+        return req.headers['x-forwarded-for'] || req.connection.remoteAddress
+    };
+
+    var track = function (req, id) {
+        r.db(config.database)
+            .table('tracking')
+            .insert([{
+                ipAddress: getIp(req),
+                fileId: id
+            }])
+            .run();
+    };
 
     // POST /play/u-u-i-d - Make it so.
     app.post('/play/:id', function (req, res) {
