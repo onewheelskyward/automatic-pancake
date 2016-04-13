@@ -42,6 +42,7 @@ var upload = require('./upload')(app, config, r);
 var search = require('./search')(app, config, r);
 var track = require('./track')(app, config, r);
 var play = require('./play')(app, config, r);
+var kill = require('./kill')(app, config, r);
 var file = require('./file')(app, config, r);
 var say = require('./say')(app, config, r);
 
