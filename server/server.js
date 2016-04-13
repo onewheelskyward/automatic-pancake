@@ -55,12 +55,6 @@ app.get('/', function (req, res) {
     res.send('pancakes');
 });
 
-app.get('/tracking', function (req, res) {
-    r.db(database).table(tables.tracking).run().then(function(result) {
-        res.send(result);
-    });
-});
-
 // POST delall - big ol' reset button.
 // app.post('/delall', function(req, res) {
 //     r.db(database).table(tables.files).delete().run();
