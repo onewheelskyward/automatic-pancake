@@ -38,7 +38,7 @@ app.use(function (req, res, next) {
 });
 
 var youtube = require('./youtube')(app, config, r)
-var addFile = require('./upload')(app, config, r)
+var upload = require('./upload')(app, config, r)
 var search = require('./search')(app, config, r)
 var track = require('./track')(app, config, r)
 var play = require('./play')(app, config, r)

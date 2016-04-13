@@ -1,5 +1,5 @@
 var fs = require('fs');
-require('./addfile.js');
+require('./addFile.js');
 
 module.exports = function(app, config, r) {
     // Add the file to rethink and autoplay.

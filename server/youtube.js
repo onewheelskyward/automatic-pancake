@@ -34,14 +34,6 @@ module.exports = function(app, config, r) {
         });
     }
 
-    function setVol(vol, callback) {
-        var cmd = 'amixer set PCM -- ' + vol;
-        console.log(cmd);
-        exec(cmd, function(error, stdout, stderr) {
-            callback();
-        });
-    }
-
     // POST /youtube - grab a 'tube, strip the audio, add and play it.
     app.post('/youtube', function (req, res) {
         var youtubeId = req.body.uri;
@@ -53,14 +45,14 @@ module.exports = function(app, config, r) {
         // Audio only
         //cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
         // Viddy-A
-        cmd = "youtube-dl -w --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
+        cmd = "youtube-dl -w --write-info-json --recode-video mp4 --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
 
         getTitle(youtubeId, function(title, id) {
             console.log("Youtube Callback!  executing " + cmd);
             exec(cmd, function(error, stdout, stderr) {
                 console.log(stdout);
                 console.log(stderr);
-                addFile(title + '.' + id + '.mp3', title, 'youtube');
+                addFile(title + '.' + id + '.mp4', title, 'youtube');
                 res.send();
             })
         });
