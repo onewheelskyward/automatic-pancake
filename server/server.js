@@ -60,15 +60,6 @@ app.get('/tracking', function (req, res) {
     });
 });
 
-// POST /kill - MAKE IT STOP
-app.post('/kill', function (req, res) {
-    track(req, 'KILL');
-    exec('killall play', function (error, stdout, stderr) {
-        console.log(stdout);
-    });
-    res.send();
-});
-
 // POST delall - big ol' reset button.
 // app.post('/delall', function(req, res) {
 //     r.db(database).table(tables.files).delete().run();
