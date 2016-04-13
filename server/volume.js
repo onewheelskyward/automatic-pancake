@@ -1,3 +1,5 @@
+var exec = require('child_process').exec;
+
 module.exports = function(app, config, r) {
 
     app.get('/vol', function (req, res) {

@@ -8,7 +8,7 @@ module.exports = function(app, config, r) {
         } else {
             r.db(config.database).table('files').filter(function(doc) {
                 console.log('Query match' + doc('file').match(req.body.query));
-                return doc('name').match(req.body.query)
+                return doc('name').match("(?i)" + req.body.query)
             }).run().then(function(result) {
                 res.send(result);
             });
