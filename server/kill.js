@@ -21,6 +21,9 @@ module.exports = function(app, config, r) {
         exec('killall play', function (error, stdout, stderr) {
             console.log(stdout);
         });
+        exec('killall mplayer', function (error, stdout, stderr) {
+            console.log(stdout);
+        });
         res.send();
     });
 
