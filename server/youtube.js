@@ -1,6 +1,8 @@
 var exec = require('child_process').exec;
 require('./track');
 require('./addFile.js');
+var soxPlayer = require('play-sound')(opts = {player: 'play'});
+var mPlayer = require('play-sound')(opts = {player: 'mplayer'});
 
 module.exports = function(app, config, r) {
     // Add the file to rethink and autoplay.
