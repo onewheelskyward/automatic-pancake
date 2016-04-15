@@ -1,4 +1,5 @@
-var player = require('play-sound')(opts = {player: 'play'});
+var soxPlayer = require('play-sound')(opts = {player: 'play'});
+var mPlayer = require('play-sound')(opts = {player: 'mplayer'});
 
 module.exports = function(app, config, r) {
     var getIp = function (req) {
@@ -30,13 +31,12 @@ module.exports = function(app, config, r) {
             //filter(r.row('id').eq(id))
             fullpath += result.file;
             console.log("Playing " + fullpath);
-
-            player.play(fullpath, function (err) {
-                // Nulls show up a lot.  ¯\_(ツ)_/¯
-                if (err) {
-                    console.log('Play error ' + err);
-                }
-            });
+            if (result.file.match(/\.mp3/)) {
+                soxPlayer.play(fullpath);
+            }
+            if (result.file.match(/\.mp4/)) {
+                mPlayer.play(fullpath);
+            }
         });
     };
 };
