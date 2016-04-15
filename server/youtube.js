@@ -5,6 +5,22 @@ require('./addFile.js');
 module.exports = function(app, config, r) {
     // Add the file to rethink and autoplay.
     // DRY
+
+    var play = function (id) {
+        var fullpath = __dirname + '/files/';
+        r.db(config.database).table('files').get(id).run().then(function(result) {
+            //filter(r.row('id').eq(id))
+            fullpath += result.file;
+            console.log("Playing " + fullpath);
+            if (result.file.match(/\.mp3/)) {
+                soxPlayer.play(fullpath);
+            }
+            if (result.file.match(/\.mp4/)) {
+                mPlayer.play(fullpath);
+            }
+        });
+    };
+
     function addFile(fieldname, name, type) {
         console.log("Adding file " + fieldname);
         r.db(config.database)
