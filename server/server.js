@@ -38,6 +38,7 @@ app.use(function (req, res, next) {
 
 var youtube = require('./youtube')(app, config, r);
 var volume = require('./volume')(app, config, r);
+var delete = require('./delete')(app, config, r);
 var upload = require('./upload')(app, config, r);
 var search = require('./search')(app, config, r);
 var track = require('./track')(app, config, r);
@@ -60,12 +61,6 @@ app.get('/', function (req, res) {
 //     r.db(database).table(tables.files).delete().run();
 //     res.send();
 // });
-
-// DELETE /u-u-i-d - remove one file
-app.delete('/:id', function(req, res) {
-    r.db(database).table(tables.files).get(req.params.id).delete().run();
-    res.send();
-});
 
 app.listen(app.get('port'), function () {
     console.log('Server started: http://localhost:' + app.get('port') + '/');
