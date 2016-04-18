@@ -17,7 +17,7 @@ module.exports = function(app, config, r) {
                     console.log("Volume: " + result[1]);
                     vol = parseInt(result[1]);
                     console.log("Volume: " + vol);
-                    vol += 100;
+                    vol += 300;
                     var cmd = 'amixer set PCM -- ' + vol;
                     console.log(cmd);
                     exec(cmd, function (error, stdout, stderr) {
@@ -37,7 +37,7 @@ module.exports = function(app, config, r) {
                     var regex = /Playback ([-0-9]+)/;
                     var result = regex.exec(str);
                     vol = parseInt(result[1]);
-                    vol -= 100;
+                    vol -= 300;
                     var cmd = 'amixer set PCM -- ' + vol;
                     console.log(cmd);
                     exec(cmd, function (error, stdout, stderr) {

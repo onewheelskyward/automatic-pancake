@@ -56,12 +56,6 @@ app.get('/', function (req, res) {
     res.send('pancakes');
 });
 
-// POST delall - big ol' reset button.
-// app.post('/delall', function(req, res) {
-//     r.db(database).table(tables.files).delete().run();
-//     res.send();
-// });
-
 app.listen(app.get('port'), function () {
     console.log('Server started: http://localhost:' + app.get('port') + '/');
 });
