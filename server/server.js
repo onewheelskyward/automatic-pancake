@@ -38,7 +38,7 @@ app.use(function (req, res, next) {
 
 var youtube = require('./youtube')(app, config, r);
 var volume = require('./volume')(app, config, r);
-var delete = require('./delete')(app, config, r);
+require('./delete')(app, config, r);
 var upload = require('./upload')(app, config, r);
 var search = require('./search')(app, config, r);
 var track = require('./track')(app, config, r);
