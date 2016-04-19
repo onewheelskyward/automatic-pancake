@@ -1,9 +1,16 @@
+var fs = require('fs');
 
 module.exports = function(app, config, r) {
     // DELETE /u-u-i-d - remove one file
     app.delete('/:id', function (req, res) {
-        r.db(config.database).table('files').get(req.params.id).delete().run();
         res.send();
+        r.db(config.database).table('files').get(req.params.id).run().then(function(result) {
+            //filter(r.row('id').eq(id))
+            var fullpath = __dirname + '/files/';
+            fs.unlink(fullpath, function() {
+                r.db(config.database).table('files').get(req.params.id).delete().run();
+            });
+        });
     });
 
     // POST delall - big ol' reset button.
