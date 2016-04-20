@@ -30,7 +30,7 @@ ReactDOM.render(
 
 var DropzoneDemo = React.createClass({
     onDrop: function (files) {
-        var req = request.post(baseUri + '/upload');
+        var req = request.post(config.host + '/upload');
         files.forEach((file)=> {
             req.attach(file.name, file);
             this.setState({filename: file.name});
@@ -180,7 +180,7 @@ var Sound = React.createClass({
         );
     },
     handleClick: function (event) {
-        var req = request.post(baseUri + '/play/' + this.props.id);
+        var req = request.post(config.host + '/play/' + this.props.id);
         req.end(); // 'callback' goes here.
     }
 });
@@ -223,7 +223,7 @@ var VolumeUp = React.createClass({
         );
     },
     handleClick: function (event) {
-        var req = request.post(baseUri + '/vol/up/');
+        var req = request.post(config.host + '/vol/up/');
         req.end(); // 'callback' goes here.
     }
 });
