@@ -183,8 +183,13 @@ var Sound = React.createClass({
 });
 
 ReactDOM.render(
-    <SoundBox url={config.host + '/files'} pollInterval={8000}/>,
-    document.getElementById('sounds')
+    <SoundBox url={config.host + '/files/fx'} pollInterval={8000}/>,
+    document.getElementById('soundsFx')
+);
+
+ReactDOM.render(
+    <SoundBox url={config.host + '/files/youtube'} pollInterval={8000}/>,
+    document.getElementById('soundsYoutube')
 );
 
 var VolumeDown = React.createClass({
