@@ -33,8 +33,7 @@ module.exports = function(app, config, r) {
             console.log("Playing " + fullpath);
             if (result.file.match(/\.mp3/)) {
                 soxPlayer.play(fullpath);
-            }
-            if (result.file.match(/\.mp4/)) {
+            } else if (result.file.match(/\.mp4/)) {
                 mPlayer.play(fullpath);
             }
         });
