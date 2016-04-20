@@ -31,9 +31,9 @@ module.exports = function(app, config, r) {
             //filter(r.row('id').eq(id))
             fullpath += result.file;
             console.log("Playing " + fullpath);
-            if (result.file.match(/\.mp3/)) {
+            if (result.file.match(/\.mp3/) || result.file.match(/\.wav/)) {
                 soxPlayer.play(fullpath);
-            } else if (result.file.match(/\.mp4/)) {
+            } else {
                 mPlayer.play(fullpath);
             }
         });
