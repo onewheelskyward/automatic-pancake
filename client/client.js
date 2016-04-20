@@ -88,6 +88,11 @@ var YoutubeForm = React.createClass({
     }
 });
 
+ReactDOM.render(
+    <YoutubeForm/>,
+    document.getElementById('youtubeform')
+);
+
 var VolumeForm = React.createClass({
     getInitialState: function () {
         return {volume: ''};
@@ -140,8 +145,6 @@ var SoundBox = React.createClass({
     render: function () {
         return (
             <div className="soundBox">
-                <YoutubeForm />
-                <VolumeForm />
                 <SoundList data={this.state.data}/>
             </div>
         );
