@@ -2,7 +2,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var request = require('superagent');
-var baseUri = 'http://localhost:3456';
+var config = require('./config.json');
 
 ReactDOM.render(
     <h1>Edit Pancake All The Things</h1>,
@@ -31,7 +31,7 @@ var SoundBox = React.createClass({
     }
 });
 
-var SoundList = React.createClass({
+var SoundEditList = React.createClass({
     propTypes: {
         data: React.PropTypes.array.isRequired
     },
@@ -65,6 +65,6 @@ var Sound = React.createClass({
 });
 
 ReactDOM.render(
-    <SoundBox url="http://localhost:3456/files" pollInterval={5000}/>,
-    document.getElementById('sounds')
+    <SoundBox url={config.host + '/files'}/>,
+    document.getElementById('edit')
 );

@@ -252,5 +252,3 @@ ReactDOM.render(
     <Kill/>,
     document.getElementById('kill')
 );
-
-
