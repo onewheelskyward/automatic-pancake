@@ -59,7 +59,7 @@ var Sound = React.createClass({
         );
     },
     handleChange: function (event) {
-        var req = request.post(baseUri + '/play/' + this.props.id);
+        // var req = request.post(baseUri + '/play/' + this.props.id);
         req.end(); // 'callback' goes here.
     }
 });
