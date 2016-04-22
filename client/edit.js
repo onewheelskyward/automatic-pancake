@@ -54,8 +54,11 @@ var SoundEditList = React.createClass({
 var Sound = React.createClass({
     render: function () {
         return (
-	    <textarea onChange={this.handleChange} className="sound" value={JSON.stringify(this.props.children, null, 2)}>
-            </textarea>
+	    <div className="soundEdit">
+	        <textarea onChange={this.handleChange} className="sound" value={JSON.stringify(this.props.children, null, 2)}>
+	        </textarea>
+            </div>
+		
         );
     },
     handleChange: function (event) {
