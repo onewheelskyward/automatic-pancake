@@ -38,8 +38,8 @@ var SoundEditList = React.createClass({
     render: function () {
         var soundNodes = this.props.data.map(function (sound) {
             return (
-                <Sound filename={sound.file} id={sound.id}>
-                    {sound.created}
+                <Sound key={sound.id}>
+                    {sound}
                 </Sound>
             );
         });
@@ -54,12 +54,13 @@ var SoundEditList = React.createClass({
 var Sound = React.createClass({
     render: function () {
         return (
-            <textarea onChange={this.handleChange} className="sound" value={this.props}>
+	    <textarea onChange={this.handleChange} className="sound" value={JSON.stringify(this.props.children, null, 2)}>
             </textarea>
         );
     },
     handleChange: function (event) {
         // var req = request.post(baseUri + '/play/' + this.props.id);
+	console.log(event);
         req.end(); // 'callback' goes here.
     }
 });
