@@ -37,9 +37,10 @@ module.exports = function(app, config, r) {
 
     // Grab the youtube title with minimal transformation based on discovery of what youtube-dl does to drop valid filenames.
     function getTitle(youtubeId, callback) {
-        titleCmd = 'youtube-dl --get-title --get-id -- ' + youtubeId;
+        titleCmd = 'youtube-dl "https://www.youtube.com/results?search_query=' + encodeURIComponent(youtubeId) + '" --get-title --get-id --max-downloads 1 --no-playlist'
         console.log("getTitle executing " + titleCmd);
         exec(titleCmd, function(error, stdout, stderr) {
+	    console.log("Parsing stdout: " + stdout);
             outs = stdout.split(/\n/);
             title = outs[0].trim()
                 .replace(/:/g, ' -')
@@ -63,7 +64,7 @@ module.exports = function(app, config, r) {
         // Audio only
         //cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
         // Viddy-A
-        cmd = "youtube-dl -w --write-info-json -f mp4 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
+        cmd = 'youtube-dl "https://www.youtube.com/results?search_query=' + encodeURIComponent(youtubeId) + '" -w --write-info-json -f mp4 -o "' + __dirname + '/files/' + '%(title)s.%(id)s.%(ext)s" --max-downloads 1 --no-playlist'
 
         getTitle(youtubeId, function(title, id) {
             console.log("Youtube Callback!  executing " + cmd);
