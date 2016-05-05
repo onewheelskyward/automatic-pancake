@@ -64,7 +64,7 @@ module.exports = function(app, config, r) {
         // Audio only
         //cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
         // Viddy-A
-        cmd = 'youtube-dl "https://www.youtube.com/results?search_query=' + encodeURIComponent(youtubeId) + '" -w --write-info-json -f mp4 -o "' + __dirname + '/files/' + '%(title)s.%(id)s.%(ext)s" --max-downloads 1 --no-playlist'
+        cmd = 'youtube-dl -w --write-info-json -f mp4 -o "' + __dirname + '/files/' + '%(title)s.%(id)s.%(ext)s" -- ' + youtubeId
 
         getTitle(youtubeId, function(title, id) {
             console.log("Youtube Callback!  executing " + cmd);
