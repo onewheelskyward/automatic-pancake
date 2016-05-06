@@ -64,16 +64,35 @@ module.exports = function(app, config, r) {
         // Audio only
         //cmd = "youtube-dl -w -x --write-info-json --audio-format mp3 -o '" + __dirname + '/files/' + "%(title)s.%(id)s.%(ext)s' " + '-- ' + req.body.uri;
         // Viddy-A
-        cmd = 'youtube-dl -w --write-info-json -f mp4 -o "' + __dirname + '/files/' + '%(title)s.%(id)s.%(ext)s" -- ' + youtubeId
 
         getTitle(youtubeId, function(title, id) {
-            console.log("Youtube Callback!  executing " + cmd);
-            exec(cmd, function(error, stdout, stderr) {
-                console.log(stdout);
-                console.log(stderr);
-                addFile(title + '.' + id + '.mp4', title, 'youtube');
-                res.send();
-            })
+	    resolutionCommand = 'youtube-dl -F -- ' + id;
+	    exec(resolutionCommand, function(error, stdout, stderr) {
+		console.log(stdout);
+                var outs = stdout.split(/\n/);
+		for (var i = 0; i < outs.length; i++) {
+		    var m = outs[i].split(/\s+/);
+		    console.log(m[0]);
+		}
+		outs.forEach()
+            title = outs[0].trim()
+                .replace(/:/g, ' -')
+                .replace(/"/g, "'")
+                .replace(/\//g, '_')
+                .replace(/\*+/g, '_');
+            id = outs[1];
+            console.log(['title: ' + title, ' id: ' + id]);
+
+		cmd = 'youtube-dl -w --write-info-json -f mp4 -o "' + __dirname + '/files/' + '%(title)s.%(id)s.%(ext)s" -- ' + id;
+                console.log("Youtube Callback!  executing " + cmd);
+/*                exec(cmd, function(error, stdout, stderr) {
+                    console.log(stdout);
+                    console.log(stderr);
+                    addFile(title + '.' + id + '.mp4', title, 'youtube');
+                    res.send();
+                })
+*/		
+	    });
         });
     });
 };
