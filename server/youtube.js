@@ -69,10 +69,11 @@ module.exports = function(app, config, r) {
 	    resolutionCommand = 'youtube-dl -F -- ' + id;
 	    exec(resolutionCommand, function(error, stdout, stderr) {
 		console.log(stdout);
-                var outs = stdout.split(/\n/);
+        var outs = stdout.split(/\n/);
 		for (var i = 0; i < outs.length; i++) {
 		    var m = outs[i].split(/\s+/);
 		    console.log(m[0]);
+            // add formats to id if it's 135 or less, then choose biggest.
 		}
 		outs.forEach()
             title = outs[0].trim()
