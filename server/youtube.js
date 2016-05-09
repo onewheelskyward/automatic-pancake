@@ -37,10 +37,15 @@ module.exports = function(app, config, r) {
 
     // Grab the youtube title with minimal transformation based on discovery of what youtube-dl does to drop valid filenames.
     function getTitle(youtubeId, callback) {
-        titleCmd = 'youtube-dl "https://www.youtube.com/results?search_query=' + encodeURIComponent(youtubeId) + '" --get-title --get-id --max-downloads 1 --no-playlist'
+        if (youtubeId.length == 11) {
+            titleCmd = 'youtube-dl --get-title --get-id -- ' + youtubeId;
+        } else {
+            titleCmd = 'youtube-dl "https://www.youtube.com/results?search_query=' + encodeURIComponent(youtubeId) + '" --get-title --get-id --max-downloads 1 --no-playlist';
+        }
+
         console.log("getTitle executing " + titleCmd);
         exec(titleCmd, function(error, stdout, stderr) {
-	    console.log("Parsing stdout: " + stdout);
+        console.log("Parsing stdout: " + stdout);
             outs = stdout.split(/\n/);
             title = outs[0].trim()
                 .replace(/:/g, ' -')
@@ -66,34 +71,32 @@ module.exports = function(app, config, r) {
         // Viddy-A
 
         getTitle(youtubeId, function(title, id) {
-	    resolutionCommand = 'youtube-dl -F -- ' + id;
-	    exec(resolutionCommand, function(error, stdout, stderr) {
-		console.log(stdout);
+        resolutionCommand = 'youtube-dl -F -- ' + id;
+        exec(resolutionCommand, function(error, stdout, stderr) {
+        console.log(stdout);
         var outs = stdout.split(/\n/);
-		for (var i = 0; i < outs.length; i++) {
-		    var m = outs[i].split(/\s+/);
-		    console.log(m[0]);
+        var formatValue = 0;
+            
+        for (var i = 0; i < outs.length; i++) {
+            var m = outs[i].split(/\s+/);
+            console.log(m[0]);
+            if (parseInt(m[0]) > formatValue && parseInt(m[0]) <= 135) {
+                console.log("Setting formatValue " + formatValue + " to " + m[0]);
+                formatValue = parseInt(m[0]);
+            }
             // add formats to id if it's 135 or less, then choose biggest.
-		}
-		outs.forEach()
-            title = outs[0].trim()
-                .replace(/:/g, ' -')
-                .replace(/"/g, "'")
-                .replace(/\//g, '_')
-                .replace(/\*+/g, '_');
-            id = outs[1];
-            console.log(['title: ' + title, ' id: ' + id]);
-
-		cmd = 'youtube-dl -w --write-info-json -f mp4 -o "' + __dirname + '/files/' + '%(title)s.%(id)s.%(ext)s" -- ' + id;
+        }
+        console.log("Format value: " + formatValue);
+        
+        cmd = 'youtube-dl -w --write-info-json -f ' + formatValue + ' -o "' + __dirname + '/files/' + '%(title)s.%(id)s.%(ext)s" -- ' + id;
                 console.log("Youtube Callback!  executing " + cmd);
-/*                exec(cmd, function(error, stdout, stderr) {
+                exec(cmd, function(error, stdout, stderr) {
                     console.log(stdout);
                     console.log(stderr);
                     addFile(title + '.' + id + '.mp4', title, 'youtube');
                     res.send();
-                })
-*/		
-	    });
+                });
+            });
         });
     });
 };
