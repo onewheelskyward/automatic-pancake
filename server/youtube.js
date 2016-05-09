@@ -71,24 +71,24 @@ module.exports = function(app, config, r) {
         // Viddy-A
 
         getTitle(youtubeId, function(title, id) {
-        resolutionCommand = 'youtube-dl -F -- ' + id;
-        exec(resolutionCommand, function(error, stdout, stderr) {
-        console.log(stdout);
-        var outs = stdout.split(/\n/);
-        var formatValue = 0;
-            
-        for (var i = 0; i < outs.length; i++) {
-            var m = outs[i].split(/\s+/);
-            console.log(m[0]);
-            if (parseInt(m[0]) > formatValue && parseInt(m[0]) <= 135) {
-                console.log("Setting formatValue " + formatValue + " to " + m[0]);
-                formatValue = parseInt(m[0]);
-            }
-            // add formats to id if it's 135 or less, then choose biggest.
-        }
-        console.log("Format value: " + formatValue);
-        
-        cmd = 'youtube-dl -w --write-info-json -f ' + formatValue + ' -o "' + __dirname + '/files/' + '%(title)s.%(id)s.%(ext)s" -- ' + id;
+            resolutionCommand = 'youtube-dl -F -- ' + id;
+            exec(resolutionCommand, function(error, stdout, stderr) {
+                console.log(stdout);
+                var outs = stdout.split(/\n/);
+                var formatValue = 0;
+
+                for (var i = 0; i < outs.length; i++) {
+                    var m = outs[i].split(/\s+/);
+                    console.log(m[0]);
+                    if (m[1] == 'mp4' && m[3].lastIndexOf('medium', 0) === 0) {
+                        console.log("Setting formatValue " + formatValue + " to " + m[0]);
+                        formatValue = parseInt(m[0]);
+                    }
+                    // add formats to id if it's 135 or less, then choose biggest.
+                }
+                console.log("Format value: " + formatValue);
+
+                cmd = 'youtube-dl -w --write-info-json -f ' + formatValue + ' -o "' + __dirname + '/files/' + '%(title)s.%(id)s.%(ext)s" -- ' + id;
                 console.log("Youtube Callback!  executing " + cmd);
                 exec(cmd, function(error, stdout, stderr) {
                     console.log(stdout);
